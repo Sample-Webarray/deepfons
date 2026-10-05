@@ -116,7 +116,7 @@ const Home = () => {
   return (
     <main id="top" className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center pt-28 pb-20 border-b border-line/50 overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center pt-[140px] md:pt-[180px] pb-20 overflow-hidden">
         <HeroGlobe />
         
         <div className="max-w-[1280px] w-full mx-auto px-[clamp(24px,5vw,56px)] relative z-10 pointer-events-none">

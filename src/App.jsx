@@ -48,6 +48,18 @@ export default function App() {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleNavClick = (e, id) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      const el = document.querySelector(id);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      setMobileMenuOpen(false);
+    }
+  };
+
   return (
     <div className="relative font-sans bg-black text-white antialiased overflow-x-hidden min-h-screen flex flex-col selection:bg-white selection:text-black">
       <Loader onComplete={() => setIsLoading(false)} />
@@ -65,7 +77,12 @@ export default function App() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-[clamp(28px,3vw,48px)]">
             {['Work', 'Services', 'Approach', 'Studio'].map(item => (
-              <Link key={item} to={location.pathname === '/' ? `#${item.toLowerCase()}` : '/'} className="text-[13.5px] tracking-wide text-white/70 hover:text-white transition-colors duration-400 py-2 relative group">
+              <Link 
+                key={item} 
+                to={location.pathname === '/' ? '' : '/'} 
+                onClick={(e) => handleNavClick(e, `#${item.toLowerCase()}`)}
+                className="text-[13.5px] tracking-wide text-white/70 hover:text-white transition-colors duration-400 py-2 relative group"
+              >
                 {item}
                 <span className="absolute left-0 bottom-0 w-full h-px bg-white transform scale-x-0 origin-right transition-transform duration-500 group-hover:scale-x-100 group-hover:origin-left" />
               </Link>
@@ -73,9 +90,13 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <a href={location.pathname === '/' ? '#contact' : '/#contact'} className="hidden md:inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-white text-black rounded-full text-[13.5px] hover:bg-[#E8E8E8] transition-colors min-h-[48px] group font-medium">
+            <Link 
+              to={location.pathname === '/' ? '' : '/'}
+              onClick={(e) => handleNavClick(e, '#contact')} 
+              className="hidden md:inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-white text-black rounded-full text-[13.5px] hover:bg-[#E8E8E8] transition-colors min-h-[48px] group font-medium"
+            >
               Start a Project <span className="transform transition-transform duration-500 group-hover:translate-x-1">→</span>
-            </a>
+            </Link>
 
             {/* Minimalist Premium Hamburger Menu */}
             <button
@@ -124,12 +145,12 @@ export default function App() {
           >
             <nav className="flex-1 flex flex-col justify-center gap-3">
               {[
-                { name: 'Home', path: '/' },
-                { name: 'Work', path: '/#work' },
-                { name: 'Services', path: '/#services' },
-                { name: 'Approach', path: '/#approach' },
-                { name: 'Studio', path: '/#studio' },
-                { name: 'Contact', path: '/#contact' }
+                { name: 'Home', path: '#top' },
+                { name: 'Work', path: '#work' },
+                { name: 'Services', path: '#services' },
+                { name: 'Approach', path: '#approach' },
+                { name: 'Studio', path: '#studio' },
+                { name: 'Contact', path: '#contact' }
               ].map((item, i) => (
                 <div key={item.name} className="overflow-hidden py-1">
                   <motion.div
@@ -139,8 +160,8 @@ export default function App() {
                     transition={{ delay: 0.1 + i * 0.06, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
                   >
                     <Link
-                      to={item.path}
-                      onClick={() => setMobileMenuOpen(false)}
+                      to={location.pathname === '/' ? '' : '/'}
+                      onClick={(e) => handleNavClick(e, item.path)}
                       className="text-[32px] md:text-[44px] font-semibold tracking-tighter block text-white/60 hover:text-white transition-colors"
                     >
                       {item.name}
@@ -194,10 +215,10 @@ export default function App() {
             <div className="flex flex-col gap-6">
               <h4 className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">Studio</h4>
               <nav className="flex flex-col gap-4">
-                <Link to="/" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Work</Link>
-                <Link to="/" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Services</Link>
-                <Link to="/" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Approach</Link>
-                <Link to="/" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Contact</Link>
+                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#work')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Work</Link>
+                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#services')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Services</Link>
+                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#approach')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Approach</Link>
+                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#contact')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Contact</Link>
               </nav>
             </div>
 
@@ -213,9 +234,9 @@ export default function App() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-[clamp(32px,5vw,48px)] border-t border-line-soft text-[12.5px] text-white/40">
             <span>© {new Date().getFullYear()} DEEPFONS. All rights reserved.</span>
             <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-white transition-colors">Instagram</a>
-              <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
-              <a href="#" className="hover:text-white transition-colors">Twitter (X)</a>
+              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">Instagram</a>
+              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">LinkedIn</a>
+              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">Twitter (X)</a>
             </div>
           </div>
         </div>

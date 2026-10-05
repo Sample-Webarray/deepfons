@@ -18,16 +18,20 @@ export default function Loader({ onComplete }) {
       {isVisible && (
         <motion.div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000000] overflow-hidden"
-          initial={{ y: 0 }}
-          exit={{ y: "-100%" }}
-          transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.8, delay: 0.2 } }}
         >
           {/* Outer container handles a slow, premium scale up and blur reveal */}
           <motion.div
             initial={{ scale: 0.8, filter: 'blur(10px)', opacity: 0 }}
             animate={{ scale: 1, filter: 'blur(0px)', opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ 
+              scale: 0.45, 
+              x: typeof window !== 'undefined' && window.innerWidth < 768 ? "-30vw" : "-40vw", 
+              y: "-45vh", 
+              opacity: 0 
+            }}
+            transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
             className="flex items-center justify-center"
           >
             {/* Inner container adds a subtle 3D rotation "move the arms" effect */}

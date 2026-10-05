@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: auto !important;
+  }
+  body {
+    @apply font-sans font-light;
+  }
+}
+
+@layer utilities {
+  .ease-custom {
+    transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+  }
+}
+
+/* Marquee infinite scroll */
+@keyframes marquee {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-marquee {
+  animation: marquee 42s linear infinite;
+}
+
+/* Lenis Specific */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Gradient backgrounds for placeholders */
+.bg-finora-placeholder {
+  background: radial-gradient(85% 110% at 15% 8%, #2E2E2E 0%, #131313 45%, #000 100%);
+}
+.bg-finora-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.05) 50%, transparent 70%),
+              repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 96px);
+}
+
+.bg-northline-placeholder {
+  background: radial-gradient(75% 100% at 88% 14%, #2C2C2C 0%, #101010 48%, #000 100%);
+}
+.bg-northline-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 72px),
+              radial-gradient(38% 55% at 30% 70%, rgba(255,255,255,.08) 0%, transparent 70%);
+}
+
+.bg-aurel-placeholder {
+  background: radial-gradient(85% 120% at 50% 110%, #303030 0%, #141414 46%, #000 100%);
+}
+.bg-aurel-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(42% 58% at 52% 60%, rgba(255,255,255,.10) 0%, transparent 72%);
+}
+
+.bg-studio-placeholder {
+  background: radial-gradient(110% 120% at 78% 8%, #282828 0%, #101010 46%, #000 100%);
+}
+.bg-studio-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 1px, transparent 1px 44px);
+}
+.bg-studio-placeholder::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(50%, 340px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 0 0 40px rgba(255,255,255,.015), 0 0 0 100px rgba(255,255,255,.008);
+}

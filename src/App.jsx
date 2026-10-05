@@ -74,7 +74,7 @@ export default function App() {
             <motion.img 
               initial={{ clipPath: 'inset(0 100% 0 0)' }}
               animate={{ clipPath: 'inset(0 0% 0 0)' }}
-              transition={{ delay: 3.6, duration: 1.4, ease: [0.76, 0, 0.24, 1] }}
+              transition={{ delay: 3.5, duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
               src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} 
               alt="Deepfons Logo" 
               className="w-[140px] md:w-[160px] h-auto object-contain" 
@@ -82,7 +82,12 @@ export default function App() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-[clamp(28px,3vw,48px)]">
+          <motion.nav 
+            initial={{ opacity: 0, filter: 'blur(16px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ delay: 4.4, duration: 2.0, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden md:flex items-center gap-[clamp(28px,3vw,48px)]"
+          >
             {['Work', 'Services', 'Approach', 'Studio'].map(item => (
               <Link 
                 key={item} 
@@ -94,9 +99,14 @@ export default function App() {
                 <span className="absolute left-0 bottom-0 w-full h-px bg-white transform scale-x-0 origin-right transition-transform duration-500 group-hover:scale-x-100 group-hover:origin-left" />
               </Link>
             ))}
-          </nav>
+          </motion.nav>
 
-          <div className="flex items-center gap-4">
+          <motion.div 
+            initial={{ opacity: 0, filter: 'blur(16px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ delay: 4.6, duration: 2.0, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-4"
+          >
             <Link 
               to={location.pathname === '/' ? '' : '/'}
               onClick={(e) => handleNavClick(e, '#contact')} 
@@ -136,7 +146,7 @@ export default function App() {
                 )}
               </AnimatePresence>
             </button>
-          </div>
+          </motion.div>
         </div>
       </motion.header>
 

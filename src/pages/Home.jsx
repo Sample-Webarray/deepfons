@@ -120,27 +120,27 @@ const Home = () => {
         <HeroGlobe />
         
         <div className="max-w-[1280px] w-full mx-auto px-[clamp(24px,5vw,56px)] relative z-10 pointer-events-none">
-          <motion.p initial={{opacity:0, y:12}} animate={{opacity:1, y:0}} transition={{duration:0.7}} className="flex items-center gap-3 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
+          <motion.p initial={{opacity:0, y:12}} animate={{opacity:1, y:0}} transition={{duration:0.8, delay: 4.8, ease: [0.22, 1, 0.36, 1]}} className="flex items-center gap-3 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
             <span className="w-1.5 h-1.5 bg-white rounded-full inline-block shadow-[0_0_8px_rgba(255,255,255,0.8)]" /> Independent Digital Team
           </motion.p>
           
           <h1 className="text-[42px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[1.04] tracking-tighter font-semibold max-w-[15ch] mb-12 md:mb-16 text-white drop-shadow-lg">
-            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 0.1}} className="block">Designing digital</motion.span></span>
-            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 0.18}} className="block">experiences with</motion.span></span>
-            <span className="block overflow-hidden pb-1 md:pb-2 text-[#a1a1a6]"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 0.26}} className="block">absolute clarity.</motion.span></span>
+            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 4.9, ease: [0.22, 1, 0.36, 1]}} className="block">Designing digital</motion.span></span>
+            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 5.0, ease: [0.22, 1, 0.36, 1]}} className="block">experiences with</motion.span></span>
+            <span className="block overflow-hidden pb-1 md:pb-2 text-[#a1a1a6]"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 5.1, ease: [0.22, 1, 0.36, 1]}} className="block">absolute clarity.</motion.span></span>
           </h1>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 md:items-end md:justify-between pointer-events-auto">
             <div className="flex-1">
-              <motion.p initial={{opacity:0, y:16}} animate={{opacity:1, y:0}} transition={{duration:0.8, delay: 0.4}} className="text-[19px] md:text-[21px] leading-[1.47] text-[#a1a1a6] max-w-[44ch] font-normal tracking-tight">
+              <motion.p initial={{opacity:0, y:16}} animate={{opacity:1, y:0}} transition={{duration:1.0, delay: 5.2, ease: [0.22, 1, 0.36, 1]}} className="text-[19px] md:text-[21px] leading-[1.47] text-[#a1a1a6] max-w-[44ch] font-normal tracking-tight">
                 A focused team combining strategy, design and development to create thoughtful digital experiences for ambitious businesses.
               </motion.p>
-              <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.6, delay: 0.5}} className="text-[12px] tracking-[0.15em] uppercase text-white/40 mt-6 md:mt-8 font-semibold">
+              <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.8, delay: 5.3, ease: [0.22, 1, 0.36, 1]}} className="text-[12px] tracking-[0.15em] uppercase text-white/40 mt-6 md:mt-8 font-semibold">
                 Based in India · Working worldwide
               </motion.p>
             </div>
 
-            <motion.div initial={{opacity:0, y:18}} animate={{opacity:1, y:0}} transition={{duration:0.7, delay: 0.6}} className="flex gap-4 flex-wrap shrink-0 mt-8 md:mt-0">
+            <motion.div initial={{opacity:0, y:18}} animate={{opacity:1, y:0}} transition={{duration:0.8, delay: 5.4, ease: [0.22, 1, 0.36, 1]}} className="flex gap-4 flex-wrap shrink-0 mt-8 md:mt-0">
               <a href="#contact" className="relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white text-black rounded-full text-[15px] font-semibold hover:bg-[#E8E8E8] transition-colors duration-300 min-h-[48px] group">
                 Start a Project <span className="transform transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>

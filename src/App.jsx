@@ -59,7 +59,7 @@ export default function App() {
       >
         <div className="max-w-[1440px] mx-auto px-[clamp(24px,5vw,56px)] flex items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity -ml-1 md:-ml-4">
-            <img src="/deepfonswhite.svg" alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
+            <img src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
           </Link>
 
           {/* Desktop Nav */}
@@ -183,7 +183,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-[clamp(48px,6vw,80px)] pb-[clamp(48px,7vw,80px)]">
             <div className="flex flex-col gap-5">
               <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity mb-2">
-                <img src="/deepfonswhite.svg" alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
+                <img src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
               </Link>
               <p className="text-[14px] tracking-wide text-white/50 leading-relaxed max-w-[30ch]">
                 An independent digital design and development studio.<br /><br />

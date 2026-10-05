@@ -208,8 +208,8 @@ const HeroGlobe = () => {
 
   // Changed z-index from -z-10 to z-0 so it doesn't fall behind the document body background
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto flex items-center justify-center">
-      <canvas ref={canvasRef} className="block w-full h-full cursor-grab touch-none select-none opacity-60 mix-blend-screen" />
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
+      <canvas ref={canvasRef} className="block w-full h-full opacity-60 mix-blend-screen" />
     </div>
   );
 };

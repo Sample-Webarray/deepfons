@@ -70,8 +70,15 @@ export default function App() {
         className="fixed top-0 left-0 right-0 z-50 py-5 md:py-6 border-b transition-all duration-300"
       >
         <div className="max-w-[1440px] mx-auto px-[clamp(24px,5vw,56px)] flex items-center justify-between gap-6">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity -ml-1 md:-ml-4">
-            <img src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity -ml-1 md:-ml-4 relative">
+            <motion.img 
+              initial={{ clipPath: 'inset(0 100% 0 0)' }}
+              animate={{ clipPath: 'inset(0 0% 0 0)' }}
+              transition={{ delay: 3.6, duration: 1.4, ease: [0.76, 0, 0.24, 1] }}
+              src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} 
+              alt="Deepfons Logo" 
+              className="w-[140px] md:w-[160px] h-auto object-contain" 
+            />
           </Link>
 
           {/* Desktop Nav */}

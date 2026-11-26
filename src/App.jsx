@@ -31,6 +31,16 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    const resetOnUnload = () => window.scrollTo(0, 0);
+    window.addEventListener('beforeunload', resetOnUnload);
+    return () => window.removeEventListener('beforeunload', resetOnUnload);
+  }, []);
+
+  useEffect(() => {
     document.body.classList.toggle('nav-locked', mobileMenuOpen);
     return () => document.body.classList.remove('nav-locked');
   }, [mobileMenuOpen]);

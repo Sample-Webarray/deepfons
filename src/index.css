@@ -50,19 +50,21 @@
 }
 
 .nav__logo img {
-  height: 20px !important;
+  height: 28px !important;
   width: auto !important;
   display: block;
 }
+
 @media (min-width: 1024px) {
   .nav__logo img {
-    height: 22px !important;
+    height: 32px !important;
   }
 }
 
 .nav__links {
   display: none !important;
 }
+
 @media (min-width: 1024px) {
   .nav__links {
     display: flex !important;
@@ -87,6 +89,7 @@
 .nav__link[aria-current="page"]::after {
   display: none !important;
 }
+
 .nav__link:hover,
 .nav__link:focus-visible {
   color: #ffffff !important;
@@ -143,6 +146,7 @@
 .nav__toggle:hover {
   background: rgba(255, 255, 255, 0.08) !important;
 }
+
 @media (min-width: 1024px) {
   .nav__toggle {
     display: none !important;

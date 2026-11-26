@@ -75,35 +75,41 @@ const SERVICES = [
 const PROJECTS = [
   {
     num: '01',
-    name: 'FINORA',
-    type: 'Fintech Website Concept',
+    name: 'Lumina Dental Atelier',
+    type: 'Dental Studio Website Concept',
     tags: 'Website Design · UX · Development',
     tag: 'Concept Project',
+    url: 'https://sample-webarray.github.io/Lumina-Dental-Atelier',
+    displayUrl: 'sample-webarray.github.io/Lumina-Dental-Atelier',
     img: `${BASE}assets/img/photo-c826-1280.jpg`,
     srcSet: `${BASE}assets/img/photo-c826-960.jpg 960w, ${BASE}assets/img/photo-c826-1280.jpg 1280w, ${BASE}assets/img/photo-c826.jpg 1920w`,
-    alt: 'Curved architectural paper sculpture in emerald and dark shadow representing Finora fintech concept',
+    alt: 'Curved architectural sculpture representing Lumina Dental Atelier website concept',
     subject: 'texture',
   },
   {
     num: '02',
-    name: 'NORTHLINE',
-    type: 'Architecture Brand Concept',
+    name: 'Maya Ateliers',
+    type: 'Luxury Salon Brand Concept',
     tags: 'Identity · Website · Art Direction',
     tag: 'Self-Initiated',
+    url: 'https://sample-webarray.github.io/maya-ateliers',
+    displayUrl: 'sample-webarray.github.io/maya-ateliers',
     img: `${BASE}assets/img/photo-c823-960.jpg`,
     srcSet: `${BASE}assets/img/photo-c823-960.jpg 960w`,
-    alt: 'Layered architectural stone-grey paper sheets with geometric shadow lines representing Northline concept',
+    alt: 'Layered architectural stone-grey composition representing Maya Ateliers salon concept',
     subject: 'texture',
   },
   {
     num: '03',
-    name: 'AUREL',
-    type: 'Premium Commerce Concept',
-    tags: 'UX · E-commerce · Development',
+    name: 'Cleaning Service Solution',
+    type: 'Service Platform Website Concept',
+    tags: 'UX · Web Platform · Development',
     tag: 'Concept Design',
+    url: 'https://sample-webarray.github.io/Cleaning-Service-solution',
+    displayUrl: 'sample-webarray.github.io/Cleaning-Service-solution',
     img: `${BASE}assets/img/photo-d88-960.jpg`,
     srcSet: `${BASE}assets/img/photo-d88-960.jpg 960w`,
-    alt: 'Cream ceramic lamp in directional sunlight casting crisp shadows representing Aurel commerce concept',
+    alt: 'Minimal ceramic interior lighting representing Cleaning Service Solution concept',
     subject: 'detail',
   },
 ];
@@ -547,8 +553,9 @@ export default function Home({ onNavigateSection }) {
             {PROJECTS.map((proj) => (
               <a
                 key={proj.num}
-                href="#contact"
-                onClick={(e) => onNavigateSection(e, '#contact')}
+                href={proj.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="span-4 work-tile group"
               >
                 <div className="work-tile__media">
@@ -584,9 +591,14 @@ export default function Home({ onNavigateSection }) {
 
                   <p className="text-[16px] text-[var(--ink)]">{proj.type}</p>
 
-                  <p className="mt-auto pt-3 text-[13px] font-medium text-[var(--muted)]">
-                    {proj.tags}
-                  </p>
+                  <div className="mt-auto pt-3 border-t border-[var(--line)] flex flex-col gap-1">
+                    <p className="text-[13px] font-medium text-[var(--muted)]">
+                      {proj.tags}
+                    </p>
+                    <span className="text-[12.5px] font-medium text-[var(--ink)]/75 group-hover:text-[var(--ink)] truncate transition-colors">
+                      {proj.displayUrl} ↗
+                    </span>
+                  </div>
                 </div>
               </a>
             ))}
@@ -752,17 +764,24 @@ export default function Home({ onNavigateSection }) {
       </section>
 
       {/* 7. WHY THIS TEAM */}
-      <section className="section section--flow ground-base" aria-labelledby="why-h">
-        <div className="wrap">
+      <section className="section section--flow ground-base relative overflow-hidden" aria-labelledby="why-h">
+        <img
+          src={`${BASE}deepfonswhiteicon.svg`}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute -left-16 -bottom-20 md:-left-20 md:-bottom-24 w-[280px] sm:w-[360px] lg:w-[440px] h-auto opacity-[0.035] z-0"
+        />
+
+        <div className="wrap relative z-10">
           <SectionHeadReveal className="section-head">
             <h2 id="why-h">Why this team.</h2>
           </SectionHeadReveal>
 
-          <div className="grid gap-y-8">
+          <div className="grid gap-y-8 relative z-10">
             {TEAM_ADVANTAGES.map((item, idx) => (
               <article
                 key={item.t}
-                className="span-3 card m-nolift p-6 justify-between gap-4"
+                className="span-3 card m-nolift p-6 justify-between gap-4 relative z-10 bg-[var(--card)]"
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">

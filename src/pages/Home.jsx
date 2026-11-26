@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import HeroGlobe from '../components/HeroGlobe';
 
 const BASE = import.meta.env.BASE_URL;
+const EASE = [0.22, 1, 0.36, 1];
 
 const SERVICES = [
   {
@@ -191,6 +193,19 @@ const BUDGET_OPTIONS = [
   { value: 'xlarge', label: '$50k+' },
 ];
 
+// Selective big-tech editorial section reveal (used only on section heads, not every item)
+const SectionHeadReveal = ({ children, className = '' }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 14 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, amount: 0.25 }}
+    transition={{ duration: 0.6, ease: EASE }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
 const CustomSelect = ({ id, labelId, options, placeholder, value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selected = options.find((o) => o.value === value) || null;
@@ -243,36 +258,42 @@ const CustomSelect = ({ id, labelId, options, placeholder, value, onChange }) =>
         </svg>
       </button>
 
-      {isOpen && (
-        <ul
-          role="listbox"
-          aria-labelledby={labelId}
-          className="df-select-menu absolute top-[calc(100%+6px)] left-0 w-full z-30 py-1.5 overflow-hidden"
-        >
-          {options.map((opt) => {
-            const isSelected = selected?.value === opt.value;
-            return (
-              <li key={opt.value} role="option" aria-selected={isSelected}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onChange(opt.value);
-                    setIsOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 text-[15px] flex items-center justify-between transition-colors ${
-                    isSelected
-                      ? 'bg-[var(--p-surface)] text-[var(--p-ink)] font-medium'
-                      : 'text-[var(--p-ink)] hover:bg-[var(--p-surface)]'
-                  }`}
-                >
-                  <span>{opt.label}</span>
-                  {isSelected && <span className="text-[var(--p-accent)] text-[13px]" aria-hidden="true">✓</span>}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.ul
+            role="listbox"
+            aria-labelledby={labelId}
+            initial={{ opacity: 0, y: -6, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.985 }}
+            transition={{ duration: 0.18, ease: EASE }}
+            className="df-select-menu absolute top-[calc(100%+6px)] left-0 w-full z-30 py-1.5 overflow-hidden"
+          >
+            {options.map((opt) => {
+              const isSelected = selected?.value === opt.value;
+              return (
+                <li key={opt.value} role="option" aria-selected={isSelected}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(opt.value);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full text-left px-3.5 py-2.5 text-[15px] flex items-center justify-between transition-colors ${
+                      isSelected
+                        ? 'bg-[var(--p-surface)] text-[var(--p-ink)] font-medium'
+                        : 'text-[var(--p-ink)] hover:bg-[var(--p-surface)]'
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    {isSelected && <span className="text-[var(--p-accent)] text-[13px]" aria-hidden="true">✓</span>}
+                  </button>
+                </li>
+              );
+            })}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -366,25 +387,45 @@ export default function Home({ onNavigateSection }) {
 
   return (
     <main id="top" tabIndex={-1} className="outline-none">
-      {/* 1. HERO (split layout, instant 1.1s entrance, 100svh) */}
+      {/* 1. HERO (choreographed post-loader entrance, crisp cubic-bezier) */}
       <section className="hero hero--split" data-enter aria-labelledby="hero-h">
         <div className="wrap">
           <div className="hero-text grid hero-split">
             <div className="hero-copy span-6">
-              <p className="hero__kicker df-enter-line">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.95, ease: EASE }}
+                className="hero__kicker"
+              >
                 <span className="dot" aria-hidden="true" />
                 Independent Digital Team
-              </p>
+              </motion.p>
 
-              <h1 id="hero-h" className="df-enter-line df-enter-d1">
+              <motion.h1
+                id="hero-h"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 1.02, ease: EASE }}
+              >
                 Designing digital experiences with absolute clarity.
-              </h1>
+              </motion.h1>
 
-              <p className="hero__lead df-enter-line df-enter-d2">
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.12, ease: EASE }}
+                className="hero__lead"
+              >
                 A focused team combining strategy, design and development to create thoughtful digital experiences for ambitious businesses.
-              </p>
+              </motion.p>
 
-              <div className="btn-row df-enter-line df-enter-d3">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 1.2, ease: EASE }}
+                className="btn-row"
+              >
                 <a
                   href="#contact"
                   onClick={(e) => onNavigateSection(e, '#contact')}
@@ -403,17 +444,27 @@ export default function Home({ onNavigateSection }) {
                 >
                   View Our Work
                 </a>
-              </div>
+              </motion.div>
 
-              <dl className="hero-facts df-enter-line df-enter-d4">
+              <motion.dl
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.3, ease: EASE }}
+                className="hero-facts"
+              >
                 <div className="col-span-3">
                   <dt>Location</dt>
                   <dd>Based in India · Working worldwide</dd>
                 </div>
-              </dl>
+              </motion.dl>
             </div>
 
-            <div className="hero-visual hero__media span-6 df-start-7 df-enter-media">
+            <motion.div
+              initial={{ opacity: 0, scale: 1.03 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.98, ease: EASE }}
+              className="hero-visual hero__media span-6 df-start-7"
+            >
               <img
                 src={`${BASE}assets/img/photo-f89043163.jpg`}
                 srcSet={`${BASE}assets/img/photo-f89043163-960.jpg 960w, ${BASE}assets/img/photo-f89043163.jpg 1280w`}
@@ -432,16 +483,16 @@ export default function Home({ onNavigateSection }) {
                 </div>
                 <div className="ly-float__title">Based in India · Working worldwide</div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 2. POSITIONING & GLOBAL REACH (ground-surface + word-highlight moment + HeroGlobe) */}
+      {/* 2. POSITIONING & GLOBAL REACH */}
       <section className="section section--flow ground-surface" aria-labelledby="positioning-h">
         <div className="wrap">
           <div className="grid grid--top gap-y-10">
-            <div className="span-6 flex flex-col gap-6">
+            <SectionHeadReveal className="span-6 flex flex-col gap-6">
               <h2 id="positioning-h" className="t-h2">
                 A team with a <span className="muted">focused way of working.</span>
               </h2>
@@ -455,14 +506,13 @@ export default function Home({ onNavigateSection }) {
               <p className="text-[16px] text-[var(--ink)] pt-2">
                 Working remotely with businesses across the UK, US, Canada and beyond.
               </p>
-            </div>
+            </SectionHeadReveal>
 
             <div className="span-6 df-start-7 h-[320px] md:h-[380px]">
               <HeroGlobe />
             </div>
           </div>
 
-          {/* Disciplines strip */}
           <div className="mt-14 md:mt-16 df-subgrid-6">
             {DISCIPLINES.map((txt, i) => (
               <div key={txt} className="pt-4 border-t border-[var(--line)] flex items-baseline gap-2.5">
@@ -476,20 +526,22 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 3. SELECTED WORK (ground-base · 3-up tile grid with real vetted photography) */}
+      {/* 3. SELECTED WORK */}
       <section id="work" className="section section--flow ground-base" aria-labelledby="work-h">
         <div className="wrap">
-          <p className="t-label text-[var(--muted)] mb-4">01 · Selected Work</p>
-          <div className="grid grid--top gap-y-6 mb-12">
-            <div className="span-6">
-              <h2 id="work-h">Concept work, made to explore our approach.</h2>
+          <SectionHeadReveal>
+            <p className="t-label text-[var(--muted)] mb-4">01 · Selected Work</p>
+            <div className="grid grid--top gap-y-6 mb-12">
+              <div className="span-6">
+                <h2 id="work-h">Concept work, made to explore our approach.</h2>
+              </div>
+              <div className="span-6 df-start-7">
+                <p className="t-lead text-[var(--ink)] max-w-[46ch]">
+                  A selection of concepts and self-initiated projects created to explore how we think about design, development and digital experiences. These are not paid client engagements.
+                </p>
+              </div>
             </div>
-            <div className="span-6 df-start-7">
-              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
-                A selection of concepts and self-initiated projects created to explore how we think about design, development and digital experiences. These are not paid client engagements.
-              </p>
-            </div>
-          </div>
+          </SectionHeadReveal>
 
           <div className="grid gap-y-8">
             {PROJECTS.map((proj) => (
@@ -546,27 +598,34 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 4. CAPABILITIES (ground-surface · 2x2 architectural cards, open on load & interactively toggleable) */}
+      {/* 4. CAPABILITIES (closed by default, smooth AnimatePresence expand/collapse on click) */}
       <section id="services" className="section section--flow ground-surface" aria-labelledby="services-h">
         <div className="wrap">
-          <p className="t-label text-[var(--muted)] mb-4">02 · Capabilities</p>
-          <div className="grid grid--top gap-y-6 mb-12">
-            <div className="span-6">
-              <h2 id="services-h">What we can build.</h2>
+          <SectionHeadReveal>
+            <p className="t-label text-[var(--muted)] mb-4">02 · Capabilities</p>
+            <div className="grid grid--top gap-y-6 mb-12">
+              <div className="span-6">
+                <h2 id="services-h">What we can build.</h2>
+              </div>
+              <div className="span-6 df-start-7">
+                <p className="t-lead text-[var(--ink)] max-w-[46ch]">
+                  Four connected areas of work. We often combine them — but each can stand on its own depending on what a project actually needs. Open a service to see what's inside.
+                </p>
+              </div>
             </div>
-            <div className="span-6 df-start-7">
-              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
-                Four connected areas of work. We often combine them — but each can stand on its own depending on what a project actually needs. Open a service to see what's inside.
-              </p>
-            </div>
-          </div>
+          </SectionHeadReveal>
 
-          <div className="df-subgrid-2">
+          <div className="df-subgrid-2 items-start">
             {SERVICES.map((service) => {
               const isOpen = openServices.has(service.id);
               const panelId = `service-panel-${service.id}`;
               return (
-                <article key={service.id} className="card m-nolift p-6 md:p-8 flex flex-col gap-5">
+                <article
+                  key={service.id}
+                  className={`card m-nolift p-6 md:p-8 flex flex-col transition-colors duration-200 ${
+                    isOpen ? 'border-[var(--line-strong)]' : 'hover:border-[var(--line-strong)]'
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => toggleService(service.id)}
@@ -576,17 +635,17 @@ export default function Home({ onNavigateSection }) {
                   >
                     <span className="w-full flex items-start justify-between gap-4">
                       <span className="flex flex-col gap-1.5 min-w-0">
-                        <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                        <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
                           {service.num} · {service.tag}
                         </span>
-                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--action)] transition-colors">
+                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--muted)] transition-colors">
                           {service.title}
                         </h3>
                       </span>
 
                       <span
                         aria-hidden="true"
-                        className={`w-9 h-9 rounded-full border border-[var(--line-strong)] inline-grid place-items-center shrink-0 transition-transform duration-200 ${
+                        className={`w-9 h-9 rounded-full border border-[var(--line-strong)] inline-grid place-items-center shrink-0 transition-transform duration-250 ${
                           isOpen ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)] rotate-90' : 'text-[var(--ink)]'
                         }`}
                       >
@@ -595,23 +654,34 @@ export default function Home({ onNavigateSection }) {
                     </span>
                   </button>
 
-                  {isOpen && (
-                    <div id={panelId} className="flex flex-col gap-5 pt-2">
-                      <p className="text-[16px] leading-[1.6] text-[var(--ink)]">
-                        {service.desc}
-                      </p>
-                      {service.items && service.items.length > 0 && (
-                        <ul className="flex flex-col gap-4 pt-4 border-t border-[var(--line)]">
-                          {service.items.map((item, idx) => (
-                            <li key={idx} className="flex flex-col gap-1">
-                              <h4 className="text-[17px] font-medium text-[var(--ink)]">{item.title}</h4>
-                              <p className="text-[16px] leading-[1.55] text-[var(--ink)]">{item.desc}</p>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        id={panelId}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.34, ease: EASE }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex flex-col gap-5 pt-5">
+                          <p className="text-[16px] leading-[1.6] text-[var(--ink)]">
+                            {service.desc}
+                          </p>
+                          {service.items && service.items.length > 0 && (
+                            <ul className="flex flex-col gap-4 pt-4 border-t border-[var(--line)]">
+                              {service.items.map((item, idx) => (
+                                <li key={idx} className="flex flex-col gap-1">
+                                  <h4 className="text-[17px] font-medium text-[var(--ink)]">{item.title}</h4>
+                                  <p className="text-[16px] leading-[1.55] text-[var(--muted)]">{item.desc}</p>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </article>
               );
             })}
@@ -619,10 +689,10 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 5. WHO WE WORK WITH (ground-base · 5 client types) */}
+      {/* 5. WHO WE WORK WITH */}
       <section className="section section--flow ground-base" aria-labelledby="clients-h">
         <div className="wrap">
-          <div className="grid grid--top gap-y-6 mb-12">
+          <SectionHeadReveal className="grid grid--top gap-y-6 mb-12">
             <div className="span-6">
               <h2 id="clients-h">Who we work with.</h2>
             </div>
@@ -631,13 +701,13 @@ export default function Home({ onNavigateSection }) {
                 We partner with ambitious teams who value design and technical craft. Our structure suits projects where direct communication and focused execution matter.
               </p>
             </div>
-          </div>
+          </SectionHeadReveal>
 
           <div className="df-subgrid-5">
             {CLIENT_TYPES.map((item, idx) => (
               <article key={item.t} className="card m-nolift justify-between p-6">
                 <div className="flex flex-col gap-2.5">
-                  <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                  <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
                     0{idx + 1}
                   </span>
                   <h3 className="df-h3 text-[var(--ink)]">{item.t}</h3>
@@ -649,17 +719,17 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 6. APPROACH / PROCESS (ground-surface · split left intro + ruled rows right) */}
+      {/* 6. APPROACH / PROCESS */}
       <section id="approach" className="section section--flow ground-surface" aria-labelledby="approach-h">
         <div className="wrap">
           <p className="t-label text-[var(--muted)] mb-4">03 · How We Work</p>
           <div className="grid grid--top gap-y-10">
-            <div className="span-6 stack-4">
+            <SectionHeadReveal className="span-6 stack-4">
               <h2 id="approach-h">Process</h2>
               <p className="t-lead text-[var(--ink)] max-w-[40ch]">
                 A methodical approach to design and development. We move from understanding the core problem to designing the system, and finally building the product.
               </p>
-            </div>
+            </SectionHeadReveal>
 
             <ol className="span-6 df-start-7">
               {PROCESS_STEPS.map((step, idx) => (
@@ -681,12 +751,12 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 7. WHY THIS TEAM (ground-base · 4-up architectural columns) */}
+      {/* 7. WHY THIS TEAM */}
       <section className="section section--flow ground-base" aria-labelledby="why-h">
         <div className="wrap">
-          <div className="section-head">
+          <SectionHeadReveal className="section-head">
             <h2 id="why-h">Why this team.</h2>
-          </div>
+          </SectionHeadReveal>
 
           <div className="grid gap-y-8">
             {TEAM_ADVANTAGES.map((item, idx) => (
@@ -695,7 +765,7 @@ export default function Home({ onNavigateSection }) {
                 className="span-3 card m-nolift p-6 justify-between gap-4"
               >
                 <div className="flex flex-col gap-2">
-                  <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                  <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
                     0{idx + 1}
                   </span>
                   <h3 className="df-h3 text-[var(--ink)]">{item.t}</h3>
@@ -707,12 +777,12 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 8. THE STUDIO (ground-surface · roles + picture-develops film moment) */}
+      {/* 8. THE STUDIO */}
       <section id="studio" className="section section--flow ground-surface" aria-labelledby="studio-h">
         <div className="wrap">
           <p className="t-label text-[var(--muted)] mb-4">04 · The Studio</p>
           <div className="grid grid--top gap-y-10">
-            <div className="span-6 flex flex-col gap-6">
+            <SectionHeadReveal className="span-6 flex flex-col gap-6">
               <h2 id="studio-h">An independent structure.</h2>
               <p className="t-lead text-[var(--ink)] max-w-[46ch]">
                 We operate as a core unit, bringing in specialised partners — copywriters, illustrators, 3D artists — only when a project demands it. This keeps the process lean and the output focused.
@@ -726,7 +796,7 @@ export default function Home({ onNavigateSection }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </SectionHeadReveal>
 
             <figure
               className="studio-develop span-6 df-start-7"
@@ -749,13 +819,13 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 9. QUESTIONS / FAQ (ground-base · split layout with all 7 answers open by default) */}
+      {/* 9. QUESTIONS / FAQ (closed by default, smooth AnimatePresence expand/collapse on click) */}
       <section className="section section--flow ground-base" aria-labelledby="faq-h">
         <div className="wrap">
           <div className="grid grid--top gap-y-10">
-            <div className="span-6 stack-4">
+            <SectionHeadReveal className="span-6 stack-4">
               <h2 id="faq-h">Questions.</h2>
-            </div>
+            </SectionHeadReveal>
 
             <div className="span-6 df-start-7">
               {FAQS.map((faq, idx) => {
@@ -771,13 +841,13 @@ export default function Home({ onNavigateSection }) {
                       className="w-full block text-left group cursor-pointer"
                     >
                       <span className="w-full flex items-baseline justify-between gap-4">
-                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--action)] transition-colors">
+                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--muted)] transition-colors">
                           {faq.q}
                         </h3>
                         <span
                           aria-hidden="true"
-                          className={`text-[18px] text-[var(--muted)] shrink-0 transition-transform duration-200 ${
-                            isOpen ? 'rotate-90 text-[var(--action)]' : ''
+                          className={`text-[18px] text-[var(--muted)] shrink-0 transition-transform duration-250 ${
+                            isOpen ? 'rotate-90 text-[var(--ink)]' : ''
                           }`}
                         >
                           →
@@ -785,11 +855,22 @@ export default function Home({ onNavigateSection }) {
                       </span>
                     </button>
 
-                    {isOpen && (
-                      <p id={faqPanelId} className="mt-2.5 text-[16px] leading-[1.6] text-[var(--ink)] max-w-[58ch]">
-                        {faq.a}
-                      </p>
-                    )}
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          id={faqPanelId}
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: EASE }}
+                          className="overflow-hidden"
+                        >
+                          <p className="pt-3 text-[16px] leading-[1.6] text-[var(--muted)] max-w-[58ch]">
+                            {faq.a}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </article>
                 );
               })}
@@ -798,12 +879,12 @@ export default function Home({ onNavigateSection }) {
         </div>
       </section>
 
-      {/* 10. CONTACT SECTION (ground-surface · accessible form aligned to shared split line) */}
+      {/* 10. CONTACT SECTION */}
       <section id="contact" className="section section--flow ground-surface" aria-labelledby="contact-h">
         <div className="wrap">
           <p className="t-label text-[var(--muted)] mb-4">05 · Contact</p>
           <div className="grid grid--top gap-y-12">
-            <div className="span-6 stack-5">
+            <SectionHeadReveal className="span-6 stack-5">
               <h2 id="contact-h" className="max-w-[18ch]">
                 Let's build something worth putting your name on.
               </h2>
@@ -821,7 +902,7 @@ export default function Home({ onNavigateSection }) {
                   </dd>
                 </div>
               </dl>
-            </div>
+            </SectionHeadReveal>
 
             <div className="span-6 df-start-7">
               <form

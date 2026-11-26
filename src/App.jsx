@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
+import Loader from './components/Loader';
 import Home from './pages/Home';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfConditions from './pages/TermsOfConditions';
@@ -23,6 +26,7 @@ const MOBILE_LINKS = [
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loaderDone, setLoaderDone] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -87,8 +91,15 @@ export default function App() {
 
   return (
     <>
-      {/* Fixed Opaque Navigation Bar (nav-centre) */}
-      <header className={`nav nav--centre ${mobileMenuOpen ? 'is-open' : ''}`}>
+      <Loader onComplete={() => setLoaderDone(true)} />
+
+      {/* Narrow Big-Tech Navigation Bar (56px desktop, 52px mobile) */}
+      <motion.header
+        initial={{ opacity: 0, y: -6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, delay: loaderDone ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className={`nav nav--centre ${mobileMenuOpen ? 'is-open' : ''}`}
+      >
         <div className="wrap nav__bar">
           <a
             className="skip-link"
@@ -111,7 +122,7 @@ export default function App() {
             <img
               src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
               alt="Deepfons"
-              className="!h-9 md:!h-11 !w-auto object-contain block"
+              className="!h-7 md:!h-8 !w-auto object-contain block"
             />
           </Link>
 
@@ -129,45 +140,56 @@ export default function App() {
             ))}
           </nav>
 
-          {/* Mobile Drawer Sheet */}
-          {mobileMenuOpen && (
-            <div className="fixed inset-0 top-[var(--nav)] z-40 bg-[#000000] border-t border-[var(--line)] flex flex-col px-[var(--gut)] py-6 lg:hidden overflow-y-auto">
-              <nav className="flex flex-col" aria-label="Mobile navigation">
-                {MOBILE_LINKS.map((item) => (
+          {/* Animated Mobile Drawer Sheet */}
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="fixed inset-0 top-[var(--nav)] z-40 bg-[#000000] border-t border-[var(--line)] flex flex-col px-[var(--gut)] py-6 lg:hidden overflow-y-auto"
+              >
+                <nav className="flex flex-col" aria-label="Mobile navigation">
+                  {MOBILE_LINKS.map((item, i) => (
+                    <motion.a
+                      key={item.name}
+                      href={item.path}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.04 * i, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      onClick={(e) => scrollToSection(e, item.path)}
+                      className="flex items-center justify-between min-h-[52px] border-b border-[var(--line)] text-[19px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors"
+                    >
+                      <span>{item.name}</span>
+                      <span aria-hidden="true" className="text-[#a3a3a3] text-[15px]">→</span>
+                    </motion.a>
+                  ))}
+                </nav>
+
+                <div className="mt-7">
                   <a
-                    key={item.name}
-                    href={item.path}
-                    onClick={(e) => scrollToSection(e, item.path)}
-                    className="flex items-center justify-between min-h-[56px] border-b border-[var(--line)] text-[20px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors"
+                    href="#contact"
+                    onClick={(e) => scrollToSection(e, '#contact')}
+                    className="btn btn--primary w-full justify-center"
                   >
-                    <span>{item.name}</span>
-                    <span aria-hidden="true" className="text-[#a3a3a3] text-[16px]">→</span>
+                    Start a Project
                   </a>
-                ))}
-              </nav>
+                </div>
 
-              <div className="mt-8">
-                <a
-                  href="#contact"
-                  onClick={(e) => scrollToSection(e, '#contact')}
-                  className="btn btn--primary w-full justify-center"
-                >
-                  Start a Project
-                </a>
-              </div>
-
-              <div className="mt-auto pt-8 border-t border-[var(--line)] flex flex-col gap-2">
-                <span className="t-label text-[#a3a3a3]">Studio</span>
-                <a
-                  href="mailto:hello@deepfons.com"
-                  className="text-[16px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors py-1"
-                >
-                  hello@deepfons.com
-                </a>
-                <span className="text-[14px] text-[#a3a3a3]">Based in India · Working worldwide</span>
-              </div>
-            </div>
-          )}
+                <div className="mt-auto pt-8 border-t border-[var(--line)] flex flex-col gap-2">
+                  <span className="t-label text-[#a3a3a3]">Studio</span>
+                  <a
+                    href="mailto:hello@deepfons.com"
+                    className="text-[16px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors py-1"
+                  >
+                    hello@deepfons.com
+                  </a>
+                  <span className="text-[14px] text-[#a3a3a3]">Based in India · Working worldwide</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="nav__actions">
             <a
@@ -190,18 +212,34 @@ export default function App() {
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setMobileMenuOpen((prev) => !prev)}
           >
-            {mobileMenuOpen ? (
-              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path d="M2 5h14M2 13h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-            )}
+            <AnimatePresence mode="wait" initial={false}>
+              {mobileMenuOpen ? (
+                <motion.span
+                  key="close"
+                  initial={{ opacity: 0, rotate: -45, scale: 0.85 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 45, scale: 0.85 }}
+                  transition={{ duration: 0.16, ease: 'easeOut' }}
+                  className="inline-flex"
+                >
+                  <X size={20} strokeWidth={1.75} aria-hidden="true" />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="open"
+                  initial={{ opacity: 0, rotate: 45, scale: 0.85 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: -45, scale: 0.85 }}
+                  transition={{ duration: 0.16, ease: 'easeOut' }}
+                  className="inline-flex"
+                >
+                  <Menu size={20} strokeWidth={1.75} aria-hidden="true" />
+                </motion.span>
+              )}
+            </AnimatePresence>
           </button>
         </div>
-      </header>
+      </motion.header>
 
       <Routes>
         <Route path="/" element={<Home onNavigateSection={scrollToSection} />} />
@@ -246,7 +284,7 @@ export default function App() {
                   <img
                     src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
                     alt="Deepfons"
-                    className="!h-10 md:!h-12 !w-auto object-contain block"
+                    className="!h-9 md:!h-11 !w-auto object-contain block"
                   />
                 </Link>
                 <p className="footer__lede text-[var(--ink)]">

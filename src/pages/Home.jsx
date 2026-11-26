@@ -769,7 +769,7 @@ export default function Home({ onNavigateSection }) {
           src={`${BASE}deepfonswhiteicon.svg`}
           alt=""
           aria-hidden="true"
-          className="pointer-events-none select-none absolute -left-16 -bottom-20 md:-left-20 md:-bottom-24 w-[280px] sm:w-[360px] lg:w-[440px] h-auto opacity-[0.035] z-0"
+          className="pointer-events-none select-none absolute -left-24 -bottom-32 sm:-left-32 sm:-bottom-44 lg:-left-40 lg:-bottom-56 w-[620px] sm:w-[820px] lg:w-[1080px] h-auto opacity-[0.045] z-0"
         />
 
         <div className="wrap relative z-10">

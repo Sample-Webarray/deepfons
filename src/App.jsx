@@ -107,7 +107,7 @@ export default function App() {
       <motion.header
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: loaderDone ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, delay: loaderDone ? 0 : 1.35, ease: [0.22, 1, 0.36, 1] }}
         className="nav"
       >
         <div className="wrap nav__bar">
@@ -130,9 +130,12 @@ export default function App() {
             aria-label="Deepfons home"
           >
             <img
-              src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
-              alt="Deepfons"
+              src={`${import.meta.env.BASE_URL}deepfonswhiteicon.svg`}
+              alt=""
+              aria-hidden="true"
+              className="nav__logo-mark"
             />
+            <span className="nav__logo-word">deepfons</span>
           </Link>
 
           <nav className="nav__links" aria-label="Main">

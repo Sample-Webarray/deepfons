@@ -130,12 +130,9 @@ export default function App() {
             aria-label="Deepfons home"
           >
             <img
-              src={`${import.meta.env.BASE_URL}deepfonswhiteicon.svg`}
-              alt=""
-              aria-hidden="true"
-              className="nav__logo-mark"
+              src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
+              alt="Deepfons"
             />
-            <span className="nav__logo-word">deepfons</span>
           </Link>
 
           <nav className="nav__links" aria-label="Main">

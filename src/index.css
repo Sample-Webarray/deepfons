@@ -44,40 +44,20 @@
 .nav__logo {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
   height: 100% !important;
   min-height: 0 !important;
   flex: none !important;
-  color: #ffffff !important;
-  text-decoration: none !important;
 }
 
-.nav__logo-mark {
-  height: 22px !important;
-  width: 22px !important;
-  display: block !important;
-  flex: none !important;
-}
-
-.nav__logo-word {
-  font-family: var(--font-display);
-  font-size: 17px !important;
-  font-weight: 500 !important;
-  letter-spacing: -0.025em !important;
-  line-height: 1 !important;
-  color: #ffffff !important;
+.nav__logo img {
+  height: 28px !important;
+  width: auto !important;
+  display: block;
 }
 
 @media (min-width: 1024px) {
-  .nav__logo {
-    gap: 9px !important;
-  }
-  .nav__logo-mark {
-    height: 24px !important;
-    width: 24px !important;
-  }
-  .nav__logo-word {
-    font-size: 18.5px !important;
+  .nav__logo img {
+    height: 30px !important;
   }
 }
 

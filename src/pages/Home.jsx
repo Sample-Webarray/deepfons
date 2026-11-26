@@ -81,9 +81,10 @@ const PROJECTS = [
     tag: 'Concept Project',
     url: 'https://sample-webarray.github.io/Lumina-Dental-Atelier',
     displayUrl: 'sample-webarray.github.io/Lumina-Dental-Atelier',
-    img: `${BASE}assets/img/photo-c826-1280.jpg`,
-    srcSet: `${BASE}assets/img/photo-c826-960.jpg 960w, ${BASE}assets/img/photo-c826-1280.jpg 1280w, ${BASE}assets/img/photo-c826.jpg 1920w`,
-    alt: 'Curved architectural sculpture representing Lumina Dental Atelier website concept',
+    img: `${BASE}assets/img/work-lumina-dental.png`,
+    w: 1024,
+    h: 495,
+    alt: 'Lumina Dental Atelier website design preview',
     subject: 'texture',
   },
   {
@@ -94,9 +95,10 @@ const PROJECTS = [
     tag: 'Self-Initiated',
     url: 'https://sample-webarray.github.io/maya-ateliers',
     displayUrl: 'sample-webarray.github.io/maya-ateliers',
-    img: `${BASE}assets/img/photo-c823-960.jpg`,
-    srcSet: `${BASE}assets/img/photo-c823-960.jpg 960w`,
-    alt: 'Layered architectural stone-grey composition representing Maya Ateliers salon concept',
+    img: `${BASE}assets/img/work-maya-ateliers.jpg`,
+    w: 1024,
+    h: 494,
+    alt: 'Maya Ateliers luxury salon website design preview',
     subject: 'texture',
   },
   {
@@ -107,9 +109,10 @@ const PROJECTS = [
     tag: 'Concept Design',
     url: 'https://sample-webarray.github.io/Cleaning-Service-solution',
     displayUrl: 'sample-webarray.github.io/Cleaning-Service-solution',
-    img: `${BASE}assets/img/photo-d88-960.jpg`,
-    srcSet: `${BASE}assets/img/photo-d88-960.jpg 960w`,
-    alt: 'Minimal ceramic interior lighting representing Cleaning Service Solution concept',
+    img: `${BASE}assets/img/work-cleaning-service.jpg`,
+    w: 1024,
+    h: 494,
+    alt: 'Cleaning Service Solution website design preview',
     subject: 'detail',
   },
 ];
@@ -285,11 +288,10 @@ const CustomSelect = ({ id, labelId, options, placeholder, value, onChange }) =>
                       onChange(opt.value);
                       setIsOpen(false);
                     }}
-                    className={`w-full text-left px-3.5 py-2.5 text-[15px] flex items-center justify-between transition-colors ${
-                      isSelected
+                    className={`w-full text-left px-3.5 py-2.5 text-[15px] flex items-center justify-between transition-colors ${isSelected
                         ? 'bg-[var(--p-surface)] text-[var(--p-ink)] font-medium'
                         : 'text-[var(--p-ink)] hover:bg-[var(--p-surface)]'
-                    }`}
+                      }`}
                   >
                     <span>{opt.label}</span>
                     {isSelected && <span className="text-[var(--p-accent)] text-[13px]" aria-hidden="true">✓</span>}
@@ -472,15 +474,15 @@ export default function Home({ onNavigateSection }) {
               className="hero-visual hero__media span-6 df-start-7"
             >
               <img
-                src={`${BASE}assets/img/photo-f89043163.jpg`}
-                srcSet={`${BASE}assets/img/photo-f89043163-960.jpg 960w, ${BASE}assets/img/photo-f89043163.jpg 1280w`}
+                src={`${BASE}assets/img/hero-studio.jpg`}
                 sizes="(max-width: 1023px) 100vw, 60vw"
-                width="1280"
-                height="928"
-                alt="Architectural grid drawing and pigment swatch studies pinned to a studio wall"
+                width="896"
+                height="1200"
+                alt="Minimalist monochrome design studio interior with sculpted matte black aluminum desk object and fluted smoked glass"
                 fetchPriority="high"
                 decoding="async"
-                data-source="stand-in"
+                className="w-full h-full object-cover"
+                data-source="custom"
                 data-subject="studio"
               />
               <div className="ly-float">
@@ -562,14 +564,13 @@ export default function Home({ onNavigateSection }) {
                   <img
                     className="work-tile__img"
                     src={proj.img}
-                    srcSet={proj.srcSet}
                     sizes="(max-width: 1023px) 100vw, 33vw"
-                    width="960"
-                    height="720"
+                    width={proj.w}
+                    height={proj.h}
                     alt={proj.alt}
                     loading="lazy"
                     decoding="async"
-                    data-source="library-057"
+                    data-source="custom"
                     data-subject={proj.subject}
                   />
                 </div>
@@ -634,9 +635,8 @@ export default function Home({ onNavigateSection }) {
               return (
                 <article
                   key={service.id}
-                  className={`card m-nolift p-6 md:p-8 flex flex-col transition-colors duration-200 ${
-                    isOpen ? 'border-[var(--line-strong)]' : 'hover:border-[var(--line-strong)]'
-                  }`}
+                  className={`card m-nolift p-6 md:p-8 flex flex-col transition-colors duration-200 ${isOpen ? 'border-[var(--line-strong)]' : 'hover:border-[var(--line-strong)]'
+                    }`}
                 >
                   <button
                     type="button"
@@ -657,9 +657,8 @@ export default function Home({ onNavigateSection }) {
 
                       <span
                         aria-hidden="true"
-                        className={`w-9 h-9 rounded-full border border-[var(--line-strong)] inline-grid place-items-center shrink-0 transition-transform duration-250 ${
-                          isOpen ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)] rotate-90' : 'text-[var(--ink)]'
-                        }`}
+                        className={`w-9 h-9 rounded-full border border-[var(--line-strong)] inline-grid place-items-center shrink-0 transition-transform duration-250 ${isOpen ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)] rotate-90' : 'text-[var(--ink)]'
+                          }`}
                       >
                         →
                       </span>
@@ -822,15 +821,14 @@ export default function Home({ onNavigateSection }) {
               data-moment="picture-develops"
             >
               <img
-                src={`${BASE}assets/img/photo-d183.jpg`}
-                srcSet={`${BASE}assets/img/photo-d183-500.jpg 500w, ${BASE}assets/img/photo-d183-960.jpg 960w, ${BASE}assets/img/photo-d183.jpg 1280w`}
+                src={`${BASE}assets/img/studio-craft.jpg`}
                 sizes="(max-width: 1023px) 100vw, 50vw"
-                width="1280"
-                height="853"
-                alt="Open blank notebook with a ribbon marker and a pencil lying across the pages on a wooden studio table"
+                width="1024"
+                height="682"
+                alt="Open Deepfons studio sketchbook with machined titanium pencil and brushed steel ruler on dark walnut table"
                 loading="lazy"
                 decoding="async"
-                data-source="library-057"
+                data-source="custom"
                 data-subject="desk"
               />
             </figure>
@@ -865,9 +863,8 @@ export default function Home({ onNavigateSection }) {
                         </h3>
                         <span
                           aria-hidden="true"
-                          className={`text-[18px] text-[var(--muted)] shrink-0 transition-transform duration-250 ${
-                            isOpen ? 'rotate-90 text-[var(--ink)]' : ''
-                          }`}
+                          className={`text-[18px] text-[var(--muted)] shrink-0 transition-transform duration-250 ${isOpen ? 'rotate-90 text-[var(--ink)]' : ''
+                            }`}
                         >
                           →
                         </span>

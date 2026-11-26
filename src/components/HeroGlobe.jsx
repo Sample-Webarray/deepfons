@@ -83,11 +83,11 @@ const HeroGlobe = () => {
       const cx = width * 0.5;
       const cy = height * 0.5;
 
-      // Architectural sphere boundary and orbital meridian
+      // Monochrome sphere boundary & orbital meridian
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(38, 37, 30, 0.12)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -95,7 +95,7 @@ const HeroGlobe = () => {
       ctx.rotate(-0.32);
       ctx.beginPath();
       ctx.ellipse(0, 0, radius * 1.32, radius * 0.28, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(29, 70, 184, 0.24)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.20)';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();
@@ -110,11 +110,11 @@ const HeroGlobe = () => {
       for (let i = 0; i < projected.length; i++) {
         const p = projected[i];
         const depth = (p.z + 1.15) / 2.15;
-        const alpha = Math.max(0.09, 0.14 + depth * 0.48);
+        const alpha = Math.max(0.1, 0.14 + depth * 0.45);
         const size = Math.max(0.9, 0.7 + depth * 1.25);
 
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = '#26251e';
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
         ctx.fill();
@@ -125,20 +125,20 @@ const HeroGlobe = () => {
         const px = cx + r.x * radius;
         const py = cy + r.y * radius;
         const depth = (r.z + 1.15) / 2.15;
-        const alpha = 0.28 + depth * 0.72;
+        const alpha = 0.35 + depth * 0.65;
         const size = 2.4 + depth * 2;
 
         if (depth > 0.45) {
-          ctx.globalAlpha = 0.24 * depth;
-          ctx.strokeStyle = '#1d46b8';
+          ctx.globalAlpha = 0.28 * depth;
+          ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.25;
           ctx.beginPath();
-          ctx.arc(px, py, size * 2.4, 0, Math.PI * 2);
+          ctx.arc(px, py, size * 2.5, 0, Math.PI * 2);
           ctx.stroke();
         }
 
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = '#1d46b8';
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
         ctx.arc(px, py, size, 0, Math.PI * 2);
         ctx.fill();
@@ -219,14 +219,14 @@ const HeroGlobe = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-[300px] rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--p-bg)] overflow-hidden select-none"
+      className="relative w-full h-full min-h-[300px] rounded-[var(--r-lg)] border border-[var(--line)] bg-[#000000] overflow-hidden select-none"
       role="img"
       aria-label="Interactive globe showing studio collaboration across India, UK, US, Canada, Germany, Singapore and Australia"
     >
       <canvas ref={canvasRef} className="block w-full h-full cursor-grab touch-pan-y" />
-      <div className="absolute top-4 left-5 right-5 flex items-center justify-between gap-2 text-[13px] font-medium text-[var(--p-muted)] pointer-events-none">
+      <div className="absolute top-4 left-5 right-5 flex items-center justify-between gap-2 text-[13px] font-medium text-[#a3a3a3] pointer-events-none">
         <span className="inline-flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[var(--p-accent)]" aria-hidden="true" />
+          <span className="w-2 h-2 rounded-full bg-[#ffffff]" aria-hidden="true" />
           <span>IN · UK · US · CA · EU · APAC</span>
         </span>
         <span>Drag to rotate</span>

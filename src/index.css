@@ -8,8 +8,8 @@
     scroll-padding-top: 0;
   }
   body {
-    background-color: var(--p-bg, #dfdedb);
-    color: var(--p-ink, #26251e);
+    background-color: #000000;
+    color: #ffffff;
     font-family: var(--font-text);
     font-weight: 400;
     font-size: 16px;
@@ -35,6 +35,49 @@
   }
 }
 
+/* Brand monochrome tones & hairline rules */
+.ground-base {
+  --bg: #000000;
+  --surface: #1f1f1f;
+  --ink: #ffffff;
+  --muted: #a3a3a3;
+  --card: #141414;
+  --action: #ffffff;
+  --action-ink: #000000;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  background: #000000;
+  color: #ffffff;
+}
+
+.ground-surface {
+  --bg: #141414;
+  --surface: #1f1f1f;
+  --ink: #ffffff;
+  --muted: #a3a3a3;
+  --card: #1f1f1f;
+  --action: #ffffff;
+  --action-ink: #000000;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  background: #141414;
+  color: #ffffff;
+}
+
+.ground-inverse {
+  --bg: #000000;
+  --surface: #1f1f1f;
+  --ink: #ffffff;
+  --muted: #a3a3a3;
+  --card: #1f1f1f;
+  --action: #ffffff;
+  --action-ink: #000000;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.26);
+  background: #000000;
+  color: #ffffff;
+}
+
 /* Consistent editorial section cadence without dead empty voids */
 main > .section--flow {
   height: auto;
@@ -42,7 +85,7 @@ main > .section--flow {
   padding-block: clamp(72px, 8vw, 112px);
 }
 
-/* Balanced split hero height at 1024px–1279px so buttons and facts never clip */
+/* Balanced split hero height at 1024px–1279px */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .hero h1 {
     font-size: clamp(40px, 3.6vw, 56px);
@@ -54,6 +97,7 @@ footer.closing.closing--flow {
   height: auto;
   min-height: 0;
   padding: clamp(72px, 7vw, 104px) 0 var(--s-6);
+  border-top: 1px solid var(--line);
 }
 footer.closing.closing--flow > .wrap {
   display: flex;
@@ -61,7 +105,7 @@ footer.closing.closing--flow > .wrap {
   gap: clamp(48px, 6vw, 72px);
 }
 
-/* Collision-free responsive sub-grids (do not use .grid with Tailwind grid-cols-*) */
+/* Collision-free responsive sub-grids */
 .df-subgrid-2 {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -108,7 +152,7 @@ footer.closing.closing--flow > .wrap {
   }
 }
 
-/* Heading scale strict uniformity: h1 (40-72) > h2 (30-48) > h3 (20) > h4 (17) */
+/* Heading scale uniformity */
 h3.df-h3 {
   font-family: var(--font-text);
   font-size: 20px;
@@ -117,7 +161,7 @@ h3.df-h3 {
   letter-spacing: -0.015em;
 }
 
-/* Hero entrance (runs cleanly once on load without hiding text past 700ms) */
+/* Hero entrance */
 @keyframes heroRise {
   from {
     opacity: 0;
@@ -164,7 +208,7 @@ h3.df-h3 {
   border-radius: var(--r-lg);
   overflow: hidden;
   position: relative;
-  background: var(--surface);
+  background: #1f1f1f;
   aspect-ratio: 4 / 3;
 }
 .studio-develop > img {
@@ -190,8 +234,8 @@ h3.df-h3 {
 @media (hover: hover) and (pointer: fine) {
   .work-tile:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in oklab, var(--ink) 22%, transparent);
-    box-shadow: 0 14px 32px -18px rgb(38 37 30 / 0.16);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 14px 32px -18px rgb(0 0 0 / 0.65);
   }
   .work-tile:hover .work-tile__img {
     transform: scale(1.03);
@@ -201,7 +245,7 @@ h3.df-h3 {
   position: relative;
   overflow: hidden;
   aspect-ratio: 4 / 3;
-  background: var(--surface);
+  background: #1f1f1f;
   border-bottom: 1px solid var(--line);
 }
 .work-tile__img {
@@ -213,11 +257,11 @@ h3.df-h3 {
 
 /* Custom accessible select dropdown */
 .df-select-menu {
-  background: var(--p-bg);
-  color: var(--p-ink);
-  border: 1px solid var(--line-strong);
+  background: #1f1f1f;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: var(--r-md);
-  box-shadow: 0 16px 36px -14px rgb(38 37 30 / 0.18);
+  box-shadow: 0 16px 36px -14px rgb(0 0 0 / 0.75);
 }
 
 /* Legal page prose */
@@ -225,6 +269,6 @@ h3.df-h3 {
 .legal-prose li {
   font-size: 16px;
   line-height: 1.65;
-  color: var(--p-ink);
+  color: #ffffff;
   max-width: 62ch;
 }

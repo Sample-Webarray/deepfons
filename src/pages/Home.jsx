@@ -278,10 +278,9 @@ const CustomSelect = ({ id, labelId, options, placeholder, value, onChange }) =>
 };
 
 export default function Home({ onNavigateSection }) {
-  // Default all 4 services open so zero content is hidden at rest, while keeping interactive toggle
-  const [openServices, setOpenServices] = useState(() => new Set([1, 2, 3, 4]));
-  // Default all 7 FAQ items open so every answer is readable immediately, while keeping interactive toggle
-  const [openFaqs, setOpenFaqs] = useState(() => new Set([0, 1, 2, 3, 4, 5, 6]));
+  // All Capabilities and FAQ cards start closed by default and open when clicked
+  const [openServices, setOpenServices] = useState(() => new Set());
+  const [openFaqs, setOpenFaqs] = useState(() => new Set());
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

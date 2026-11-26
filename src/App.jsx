@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
-import BrandMark from './components/BrandMark';
 import Home from './pages/Home';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfConditions from './pages/TermsOfConditions';
@@ -106,10 +105,14 @@ export default function App() {
           <Link
             to="/"
             onClick={(e) => scrollToSection(e, '#top')}
-            className="nav__logo"
+            className="nav__logo shrink-0 flex items-center hover:opacity-85 transition-opacity"
             aria-label="Deepfons home"
           >
-            <BrandMark />
+            <img
+              src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
+              alt="Deepfons"
+              className="!h-9 md:!h-11 !w-auto object-contain block"
+            />
           </Link>
 
           <nav className="nav__links" aria-label="Main">
@@ -128,17 +131,17 @@ export default function App() {
 
           {/* Mobile Drawer Sheet */}
           {mobileMenuOpen && (
-            <div className="fixed inset-0 top-[var(--nav)] z-40 bg-[var(--p-bg)] border-t border-[var(--line)] flex flex-col px-[var(--gut)] py-6 lg:hidden overflow-y-auto">
+            <div className="fixed inset-0 top-[var(--nav)] z-40 bg-[#000000] border-t border-[var(--line)] flex flex-col px-[var(--gut)] py-6 lg:hidden overflow-y-auto">
               <nav className="flex flex-col" aria-label="Mobile navigation">
                 {MOBILE_LINKS.map((item) => (
                   <a
                     key={item.name}
                     href={item.path}
                     onClick={(e) => scrollToSection(e, item.path)}
-                    className="flex items-center justify-between min-h-[56px] border-b border-[var(--line)] text-[20px] font-medium text-[var(--p-ink)] hover:text-[var(--p-action)] transition-colors"
+                    className="flex items-center justify-between min-h-[56px] border-b border-[var(--line)] text-[20px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors"
                   >
                     <span>{item.name}</span>
-                    <span aria-hidden="true" className="text-[var(--p-muted)] text-[16px]">→</span>
+                    <span aria-hidden="true" className="text-[#a3a3a3] text-[16px]">→</span>
                   </a>
                 ))}
               </nav>
@@ -154,14 +157,14 @@ export default function App() {
               </div>
 
               <div className="mt-auto pt-8 border-t border-[var(--line)] flex flex-col gap-2">
-                <span className="t-label text-[var(--p-muted)]">Studio</span>
+                <span className="t-label text-[#a3a3a3]">Studio</span>
                 <a
                   href="mailto:hello@deepfons.com"
-                  className="text-[16px] font-medium text-[var(--p-ink)] hover:text-[var(--p-action)] transition-colors py-1"
+                  className="text-[16px] font-medium text-[#ffffff] hover:text-[#a3a3a3] transition-colors py-1"
                 >
                   hello@deepfons.com
                 </a>
-                <span className="text-[14px] text-[var(--p-muted)]">Based in India · Working worldwide</span>
+                <span className="text-[14px] text-[#a3a3a3]">Based in India · Working worldwide</span>
               </div>
             </div>
           )}
@@ -237,10 +240,14 @@ export default function App() {
                 <Link
                   to="/"
                   onClick={(e) => scrollToSection(e, '#top')}
-                  className="nav__logo text-[var(--ink)]"
+                  className="inline-flex items-center hover:opacity-85 transition-opacity"
                   aria-label="Deepfons home"
                 >
-                  <BrandMark />
+                  <img
+                    src={`${import.meta.env.BASE_URL}deepfonswhite.svg`}
+                    alt="Deepfons"
+                    className="!h-10 md:!h-12 !w-auto object-contain block"
+                  />
                 </Link>
                 <p className="footer__lede text-[var(--ink)]">
                   An independent digital design and development studio.

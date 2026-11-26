@@ -1,4 +1,3 @@
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -8,16 +7,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Work Sans"', '"Hanken Grotesk"', 'system-ui', 'sans-serif'],
+        sans: ['"Hanken Grotesk"', 'system-ui', 'sans-serif'],
       },
       colors: {
-        stone: {
-          bg: '#dfdedb',
-          surface: '#d3d2ce',
-          ink: '#26251e',
-          muted: '#5a5850',
+        brand: {
+          primary: '#1F1F1F',
+          secondary: '#000000',
+          tertiary: '#FFFFFF',
+          muted: '#A3A3A3',
         },
-        blueprint: '#2456d6',
       }
     },
   },

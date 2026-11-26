@@ -351,13 +351,6 @@ export default function App() {
                   Twitter (X)
                 </a>
               </div>
-
-              <details className="credits">
-                <summary>Photographs via Wikimedia Commons</summary>
-                <p>
-                  Studio wall artwork by Gil Marco Shani (CC BY-SA 4.0); curved paper sculpture by Dietmar Rabich (CC BY-SA 4.0); layered card texture by Brandi Redd (CC0); lamp silhouette by LoMit (CC BY-SA 4.0); open notebook desk detail (Unsplash/CC0), all via Wikimedia Commons.
-                </p>
-              </details>
             </div>
           </div>
         </div>

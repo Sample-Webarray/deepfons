@@ -1,13 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-type="service" data-radius="soft" data-buttons="solid" data-motion>
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" media="(prefers-color-scheme: light)" />
-    <link rel="icon" type="image/svg+xml" href="/favicondark.svg" media="(prefers-color-scheme: dark)" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Deepfons — Digital Design & Development Studio</title>
+    <meta name="description" content="An independent digital design and development studio combining strategy, design and development for ambitious businesses worldwide." />
+    <meta name="site-kind" content="other" />
+    <meta name="page-type" content="service" />
+    <meta name="theme-color" content="#dfdedb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Deepfons — Digital Design & Development Studio" />
+    <meta property="og:description" content="A focused team combining strategy, design and development to create thoughtful digital experiences for ambitious businesses." />
+    <meta property="og:image" content="assets/img/photo-f89043163.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="favicondark.svg" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400..700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/system.css" />
+    <link rel="stylesheet" href="assets/ui/cards.css" />
+    <link rel="stylesheet" href="assets/motion/motion.css" />
+    <link rel="stylesheet" href="assets/layout/layout.css" />
+    <style>
+      :root {
+        --p-bg: #dfdedb;
+        --p-surface: #d3d2ce;
+        --p-ink: #26251e;
+        --p-muted: #525048;
+        --p-accent: #1d46b8;
+        --p-accent-ink: #ffffff;
+        --p-action: #1d46b8;
+        --p-action-ink: #ffffff;
+        --p-inv-bg: #26251e;
+        --p-inv-surface: #313029;
+        --p-inv-ink: #dfdedb;
+        --p-inv-muted: #a6a59f;
+        --p-inv-accent: #dfdedb;
+        --p-inv-accent-ink: #26251e;
+        --p-inv-action: #dfdedb;
+        --p-inv-action-ink: #26251e;
+        --font-display: "Work Sans", "Hanken Grotesk", system-ui, sans-serif;
+        --font-text: "Work Sans", "Hanken Grotesk", system-ui, sans-serif;
+        --display-weight: 400;
+        --display-tracking: -0.025em;
+        --display-tracking-xl: -0.035em;
+      }
+    </style>
+    <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+    <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+    <link rel="modulepreload" href="assets/moments/moments.js" />
+    <link rel="modulepreload" href="assets/moments/lib.js" />
+    <link rel="modulepreload" href="assets/moments/word-highlight/moment.js" />
+    <link rel="modulepreload" href="assets/moments/picture-develops/moment.js" />
   </head>
-  <body class="bg-black text-white antialiased selection:bg-white selection:text-black">
+  <body class="antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

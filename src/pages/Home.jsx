@@ -1,534 +1,961 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import HeroGlobe from '../components/HeroGlobe';
 
-// Custom Select Component
-const CustomSelect = ({ options, placeholder }) => {
+const BASE = import.meta.env.BASE_URL;
+
+const SERVICES = [
+  {
+    id: 1,
+    num: '01',
+    title: 'Web Design',
+    tag: 'Strategy · UX / UI · Visual Direction',
+    desc: 'Strategy, information architecture, UX/UI, responsive design and visual direction. We start with the content and the goal — not the layout — so every decision has a reason behind it.',
+    items: [
+      {
+        title: 'Information Architecture',
+        desc: 'We map the pages, the hierarchy and the navigation before any layout decisions are made — so the structure holds up as the site grows.',
+      },
+      {
+        title: 'UX / UI Design',
+        desc: 'Interface design grounded in real content and real user flows — not placeholder text and lorem ipsum.',
+      },
+      {
+        title: 'Visual Direction',
+        desc: 'Typography, colour, spacing and imagery defined as a system that stays consistent across every page and screen.',
+      },
+    ],
+  },
+  {
+    id: 2,
+    num: '02',
+    title: 'Web Development',
+    tag: 'Front-End · CMS · Performance',
+    desc: "Fast, responsive and maintainable websites built around each project's requirements. Semantic markup, lightweight JavaScript and performance treated as a design decision.",
+    items: [
+      {
+        title: 'Front-End Development',
+        desc: 'Semantic HTML, modern CSS and lightweight JavaScript — built to be read, extended and maintained by another developer.',
+      },
+      {
+        title: 'CMS Integration',
+        desc: 'Content modelled around how the team actually writes, publishes and updates — not around a template.',
+      },
+    ],
+  },
+  {
+    id: 3,
+    num: '03',
+    title: 'Brand Identity',
+    tag: 'Typography · Colour · Visual Systems',
+    desc: 'Visual systems, identity direction, typography, colour and digital brand expression. Rules that hold up across every surface — from a favicon to a full site.',
+    items: [
+      {
+        title: 'Identity Direction',
+        desc: 'A visual direction that comes from strategy — the market, the audience and the story — not from a mood board alone.',
+      },
+    ],
+  },
+  {
+    id: 4,
+    num: '04',
+    title: 'Digital Experiences',
+    tag: 'Interactivity · Motion · Immersive',
+    desc: 'Interactive components, fluid motion, and immersive 3D/WebGL experiences that elevate standard interfaces.',
+    items: [
+      {
+        title: 'Motion & Interaction',
+        desc: 'Using animation to guide attention and explain functionality, rather than just decorating.',
+      },
+    ],
+  },
+];
+
+const PROJECTS = [
+  {
+    num: '01',
+    name: 'FINORA',
+    type: 'Fintech Website Concept',
+    tags: 'Website Design · UX · Development',
+    tag: 'Concept Project',
+    img: `${BASE}assets/img/photo-c826-1280.jpg`,
+    srcSet: `${BASE}assets/img/photo-c826-960.jpg 960w, ${BASE}assets/img/photo-c826-1280.jpg 1280w, ${BASE}assets/img/photo-c826.jpg 1920w`,
+    alt: 'Curved architectural paper sculpture in emerald and dark shadow representing Finora fintech concept',
+    subject: 'texture',
+  },
+  {
+    num: '02',
+    name: 'NORTHLINE',
+    type: 'Architecture Brand Concept',
+    tags: 'Identity · Website · Art Direction',
+    tag: 'Self-Initiated',
+    img: `${BASE}assets/img/photo-c823-960.jpg`,
+    srcSet: `${BASE}assets/img/photo-c823-960.jpg 960w`,
+    alt: 'Layered architectural stone-grey paper sheets with geometric shadow lines representing Northline concept',
+    subject: 'texture',
+  },
+  {
+    num: '03',
+    name: 'AUREL',
+    type: 'Premium Commerce Concept',
+    tags: 'UX · E-commerce · Development',
+    tag: 'Concept Design',
+    img: `${BASE}assets/img/photo-d88-960.jpg`,
+    srcSet: `${BASE}assets/img/photo-d88-960.jpg 960w`,
+    alt: 'Cream ceramic lamp in directional sunlight casting crisp shadows representing Aurel commerce concept',
+    subject: 'detail',
+  },
+];
+
+const DISCIPLINES = [
+  'Web Design',
+  'Web Development',
+  'Brand Identity',
+  'Digital Experiences',
+  'UI / UX',
+  'Website Redesign',
+];
+
+const CLIENT_TYPES = [
+  { t: 'Startups & Tech', d: 'Early-stage and growing tech companies needing clear product communication.' },
+  { t: 'Studios & Agencies', d: 'Creative teams looking for a reliable development partner.' },
+  { t: 'B2B Services', d: 'Professional services requiring a high-quality digital presence.' },
+  { t: 'Architecture & Design', d: 'Firms needing portfolio sites that respect the work.' },
+  { t: 'E-Commerce', d: 'Independent brands focused on premium shopping experiences.' },
+];
+
+const PROCESS_STEPS = [
+  { title: 'Discover', desc: 'Understanding the audience, the goals and the constraints.' },
+  { title: 'Define', desc: 'Information architecture and wireframing the core structure.' },
+  { title: 'Design', desc: 'Creating the visual system and applying it to the interfaces.' },
+  { title: 'Build', desc: 'Writing the front-end code and integrating the back-end systems.' },
+  { title: 'Launch', desc: 'Testing, deployment and handing over the final product.' },
+];
+
+const TEAM_ADVANTAGES = [
+  { t: 'Direct communication', d: 'You talk directly to the people designing and building your site. No layers of account management.' },
+  { t: 'Focused execution', d: 'We take on a limited number of projects to ensure every client gets the attention required.' },
+  { t: 'Flexible collaboration', d: 'We integrate with internal teams, or handle the entire process from start to finish.' },
+  { t: 'Design + dev together', d: "Because we do both, design decisions aren't compromised during development." },
+];
+
+const STUDIO_ROLES = [
+  { r: 'Project Lead', n: 'Strategy & Direction' },
+  { r: 'Design', n: 'UX / UI & Visual' },
+  { r: 'Development', n: 'Front-End & CMS' },
+  { r: 'Coordination', n: 'Timeline & QA' },
+];
+
+const FAQS = [
+  {
+    q: 'How long does a typical project take?',
+    a: 'Most projects take between 6 to 12 weeks from strategy to launch, depending on the complexity of the requirements and the speed of feedback.',
+  },
+  {
+    q: 'Do you work with startups?',
+    a: 'Yes. We frequently work with early-stage companies to establish their initial digital presence and product marketing sites.',
+  },
+  {
+    q: 'What technologies do you use?',
+    a: 'We build primarily with React, Next.js, and modern CSS for the front-end, integrated with headless CMS platforms like Sanity or Prismic.',
+  },
+  {
+    q: 'Can you help with branding first?',
+    a: 'Yes, we often handle brand identity and visual direction as the first phase before moving into web design and development.',
+  },
+  {
+    q: 'Do you maintain the site after launch?',
+    a: 'Yes, we offer ongoing support and maintenance retainers for clients who want continuous iterations and improvements.',
+  },
+  {
+    q: 'How do you handle project management?',
+    a: 'We use shared tools (like Notion or Linear) and schedule regular check-ins. You communicate directly with the team doing the work.',
+  },
+  {
+    q: 'What is your pricing structure?',
+    a: 'We provide fixed-price proposals based on a defined scope of work after our initial discovery conversations.',
+  },
+];
+
+const SERVICE_OPTIONS = [
+  { value: 'design', label: 'Web Design & UX' },
+  { value: 'development', label: 'Web Development' },
+  { value: 'brand', label: 'Brand Identity' },
+  { value: 'full', label: 'Full Website Creation' },
+  { value: 'other', label: 'Other' },
+];
+
+const BUDGET_OPTIONS = [
+  { value: 'small', label: '$5k - $10k' },
+  { value: 'medium', label: '$10k - $25k' },
+  { value: 'large', label: '$25k - $50k' },
+  { value: 'xlarge', label: '$50k+' },
+];
+
+const CustomSelect = ({ id, labelId, options, placeholder, value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
+  const selected = options.find((o) => o.value === value) || null;
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const onOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('mousedown', onOutside);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onOutside);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
 
   return (
-    <div className="relative w-full">
-      {isOpen && <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />}
-      <button 
+    <div ref={containerRef} className="relative w-full">
+      <button
+        id={id}
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative z-20 w-full flex items-center justify-between bg-transparent border-0 border-b border-white/20 pb-3 pt-2 text-[17px] font-normal tracking-tight focus:outline-none focus:border-white transition-colors text-white appearance-none cursor-pointer"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-labelledby={labelId}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="w-full h-[var(--btn-h)] px-3 flex items-center justify-between bg-[var(--bg)] border border-[var(--line-strong)] rounded-[var(--r-sm)] text-[16px] text-left hover:border-[var(--ink)] focus-visible:outline-2 focus-visible:outline-[var(--action)] transition-colors cursor-pointer"
       >
-        <span className={selected ? "text-white" : "text-white/50"}>
+        <span className={selected ? 'text-[var(--ink)] font-normal' : 'text-[var(--muted)] font-normal'}>
           {selected ? selected.label : placeholder}
         </span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className="text-white/40">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </motion.div>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`text-[var(--muted)] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
+          aria-hidden="true"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#111111]/95 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl py-2"
-          >
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  setSelected(opt);
-                  setIsOpen(false);
-                }}
-                className={`w-full text-left px-5 py-3 text-[15px] hover:bg-white/10 transition-colors ${selected?.value === opt.value ? 'text-white bg-white/5' : 'text-white/70'}`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <ul
+          role="listbox"
+          aria-labelledby={labelId}
+          className="df-select-menu absolute top-[calc(100%+6px)] left-0 w-full z-30 py-1.5 overflow-hidden"
+        >
+          {options.map((opt) => {
+            const isSelected = selected?.value === opt.value;
+            return (
+              <li key={opt.value} role="option" aria-selected={isSelected}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange(opt.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2.5 text-[15px] flex items-center justify-between transition-colors ${
+                    isSelected
+                      ? 'bg-[var(--p-surface)] text-[var(--p-ink)] font-medium'
+                      : 'text-[var(--p-ink)] hover:bg-[var(--p-surface)]'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {isSelected && <span className="text-[var(--p-accent)] text-[13px]" aria-hidden="true">✓</span>}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };
 
-// Reveal Component
-const Reveal = ({ children, className = '' }) => {
+export default function Home({ onNavigateSection }) {
+  // Default all 4 services open so zero content is hidden at rest, while keeping interactive toggle
+  const [openServices, setOpenServices] = useState(() => new Set([1, 2, 3, 4]));
+  // Default all 7 FAQ items open so every answer is readable immediately, while keeping interactive toggle
+  const [openFaqs, setOpenFaqs] = useState(() => new Set([0, 1, 2, 3, 4, 5, 6]));
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
+  const [serviceType, setServiceType] = useState('');
+  const [budget, setBudget] = useState('');
+  const [details, setDetails] = useState('');
+  const [errors, setErrors] = useState({});
+  const [formStatus, setFormStatus] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const mountMoments = async () => {
+      try {
+        window.__momentsManual = true;
+        const mod = await import(/* @vite-ignore */ `${BASE}assets/moments/moments.js`);
+        if (!active) return;
+        mod.unmountAll(document);
+        await mod.mountAll(document);
+      } catch {
+        document.documentElement.classList.add('mo-safe');
+      }
+    };
+    mountMoments();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const toggleService = (id) => {
+    setOpenServices((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleFaq = (idx) => {
+    setOpenFaqs((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
+
+  const handleFormSubmit = (e) => {
+    const nextErrors = {};
+    if (!name.trim()) {
+      nextErrors.name = 'Write your full name so we know who to reply to.';
+    }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      nextErrors.email = 'Write a valid work email address with an @.';
+    }
+    if (!details.trim()) {
+      nextErrors.details = 'Share a short note about your goals or timeline.';
+    }
+
+    setErrors(nextErrors);
+
+    const errKeys = Object.keys(nextErrors);
+    if (errKeys.length > 0) {
+      e.preventDefault();
+      setFormStatus(`Please check ${errKeys.length} ${errKeys.length === 1 ? 'field' : 'fields'} highlighted above.`);
+      const firstId = errKeys[0] === 'name' ? 'f-name' : errKeys[0] === 'email' ? 'f-email' : 'f-details';
+      document.getElementById(firstId)?.focus();
+      return;
+    }
+
+    e.preventDefault();
+    const serviceLabel = SERVICE_OPTIONS.find((o) => o.value === serviceType)?.label || 'Not specified';
+    const budgetLabel = BUDGET_OPTIONS.find((o) => o.value === budget)?.label || 'Not specified';
+
+    const subject = encodeURIComponent(`Project Enquiry from ${name.trim()}${company.trim() ? ` (${company.trim()})` : ''}`);
+    const body = encodeURIComponent(
+      `Name: ${name.trim()}\nWork email: ${email.trim()}\nCompany: ${company.trim() || 'Not specified'}\nService: ${serviceLabel}\nBudget range: ${budgetLabel}\n\nProject details:\n${details.trim()}`
+    );
+
+    setFormStatus('Opening your email client to send the enquiry to hello@deepfons.studio.');
+    window.location.href = `mailto:hello@deepfons.studio?subject=${subject}&body=${body}`;
+  };
+
   return (
-    <motion.div
-      initial={{ y: 30, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-// Accordion Component
-const Accordion = ({ num, title, tag, desc, items, isOpen, onClick }) => {
-  return (
-    <article className={`border-b border-line/70 transition-colors duration-500 ${isOpen ? 'text-white' : 'text-white/70'}`}>
-      <button 
-        onClick={onClick}
-        className="flex items-start gap-[24px] md:gap-[32px] w-full text-left py-10 md:py-12 hover:text-white transition-colors duration-500"
-      >
-        <span className={`flex items-center justify-center w-6 h-[30px] md:h-[44px] text-white/40 transition-transform duration-700 shrink-0 ${isOpen ? 'rotate-90 text-white' : ''}`}>→</span>
-        <span className={`flex items-center justify-center h-[30px] md:h-[44px] text-[13px] tracking-[0.2em] transition-colors duration-500 font-medium shrink-0 ${isOpen ? 'text-white/60' : 'text-white/40'}`}>{num}</span>
-        <span className="flex flex-col gap-2 min-w-0 flex-1">
-          <span className="text-[28px] md:text-[40px] font-medium tracking-tight text-white leading-[1.1]">{title}</span>
-          {tag && <span className={`text-[12px] md:text-[13px] tracking-[0.1em] uppercase transition-colors duration-400 font-medium ${isOpen ? 'text-white/60' : 'text-white/40'}`}>{tag}</span>}
-        </span>
-      </button>
-
-      <motion.div 
-        initial={false}
-        animate={{ height: isOpen ? 'auto' : 0 }}
-        className="overflow-hidden"
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="grid grid-cols-[24px_24px_1fr] md:grid-cols-[24px_32px_1fr] gap-[24px] md:gap-[32px] pb-12 md:pb-16">
-          <div className="col-start-3 min-w-0">
-            {desc && <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[65ch] font-normal tracking-tight">{desc}</p>}
-            {items && items.length > 0 && (
-              <ul className={`mt-8 md:mt-10 ${desc ? 'border-t border-line/50' : ''}`}>
-                {items.map((item, idx) => (
-                  <li key={idx} className="border-b border-line/50 last:border-0 py-5 md:py-6 flex flex-col gap-2">
-                    <div className="text-[19px] md:text-[21px] text-white font-medium tracking-tight leading-[1.2]">{item.title}</div>
-                    <div className="text-[16px] md:text-[17px] text-[#a1a1a6] max-w-[65ch] leading-[1.5] font-normal tracking-tight">{item.desc}</div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      </motion.div>
-    </article>
-  );
-};
-
-const Home = () => {
-  const [activeService, setActiveService] = useState(null);
-  const [activeFaq, setActiveFaq] = useState(null);
-
-  return (
-    <main id="top" className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative min-h-[100svh] md:min-h-[90vh] flex flex-col justify-center pt-[140px] md:pt-28 pb-20 overflow-hidden">
-        <HeroGlobe />
-        
-        <div className="max-w-[1280px] w-full mx-auto px-[clamp(24px,5vw,56px)] relative z-10 pointer-events-none">
-          <motion.p initial={{opacity:0, y:12}} animate={{opacity:1, y:0}} transition={{duration:0.8, delay: 4.8, ease: [0.22, 1, 0.36, 1]}} className="flex items-center gap-3 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
-            <span className="w-1.5 h-1.5 bg-white rounded-full inline-block shadow-[0_0_8px_rgba(255,255,255,0.8)]" /> Independent Digital Team
-          </motion.p>
-          
-          <h1 className="text-[42px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[1.04] tracking-tighter font-semibold max-w-[15ch] mb-12 md:mb-16 text-white drop-shadow-lg">
-            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 4.9, ease: [0.22, 1, 0.36, 1]}} className="block">Designing digital</motion.span></span>
-            <span className="block overflow-hidden pb-1 md:pb-2"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 5.0, ease: [0.22, 1, 0.36, 1]}} className="block">experiences with</motion.span></span>
-            <span className="block overflow-hidden pb-1 md:pb-2 text-[#a1a1a6]"><motion.span initial={{y:"118%"}} animate={{y:0}} transition={{duration:1.2, delay: 5.1, ease: [0.22, 1, 0.36, 1]}} className="block">absolute clarity.</motion.span></span>
-          </h1>
-
-          <div className="flex flex-col md:flex-row gap-8 md:gap-20 md:items-end md:justify-between pointer-events-auto">
-            <div className="flex-1">
-              <motion.p initial={{opacity:0, y:16}} animate={{opacity:1, y:0}} transition={{duration:1.0, delay: 5.2, ease: [0.22, 1, 0.36, 1]}} className="text-[19px] md:text-[21px] leading-[1.47] text-[#a1a1a6] max-w-[44ch] font-normal tracking-tight">
-                A focused team combining strategy, design and development to create thoughtful digital experiences for ambitious businesses.
-              </motion.p>
-              <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.8, delay: 5.3, ease: [0.22, 1, 0.36, 1]}} className="text-[12px] tracking-[0.15em] uppercase text-white/40 mt-6 md:mt-8 font-semibold">
-                Based in India · Working worldwide
-              </motion.p>
-            </div>
-
-            <motion.div initial={{opacity:0, y:18}} animate={{opacity:1, y:0}} transition={{duration:0.8, delay: 5.4, ease: [0.22, 1, 0.36, 1]}} className="flex gap-4 flex-wrap shrink-0 mt-8 md:mt-0">
-              <a href="#contact" className="relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white text-black rounded-full text-[15px] font-semibold hover:bg-[#E8E8E8] transition-colors duration-300 min-h-[48px] group">
-                Start a Project <span className="transform transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-              <a href="#work" className="relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-transparent border border-[#424245] text-white rounded-full text-[15px] font-semibold hover:border-white transition-colors duration-300 min-h-[48px]">
-                View Our Work
-              </a>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Positioning / Marquee */}
-      <section className="py-20 md:py-32">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-10 md:gap-20 items-start">
-            <Reveal>
-              <h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold max-w-[18ch] text-white">
-                A team with a <span className="text-[#a1a1a6]">focused way of working.</span>
-              </h2>
-            </Reveal>
-            <Reveal>
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[48ch] font-normal tracking-tight">
-                We bring design, development and project coordination together in one flexible team — allowing us to stay close to the work and communicate directly with the people we build for.
+    <main id="top" tabIndex={-1} className="outline-none">
+      {/* 1. HERO (split layout, instant 1.1s entrance, 100svh) */}
+      <section className="hero hero--split" data-enter aria-labelledby="hero-h">
+        <div className="wrap">
+          <div className="hero-text grid hero-split">
+            <div className="hero-copy span-6">
+              <p className="hero__kicker df-enter-line">
+                <span className="dot" aria-hidden="true" />
+                Independent Digital Team
               </p>
-              <p className="mt-8 text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Working remotely with businesses across the UK, US, Canada and beyond.</p>
-            </Reveal>
-          </div>
-        </div>
 
-        <div className="relative mt-20 md:mt-32 py-8 border-y border-line/50 overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_15%,#000_85%,transparent)]">
-          <div className="flex w-max animate-marquee">
-            <div className="flex items-center">
-              {['Web Design', 'Web Development', 'Brand Identity', 'Digital Experiences', 'UI / UX', 'Website Redesign', 'Web Design', 'Web Development', 'Brand Identity', 'Digital Experiences', 'UI / UX', 'Website Redesign'].map((txt, i) => (
-                <React.Fragment key={i}>
-                  <span className="text-[13px] md:text-[14px] tracking-[0.2em] uppercase text-[#a1a1a6] px-8 md:px-16 whitespace-nowrap font-semibold">{txt}</span>
-                  <span className="text-white/20 text-lg">·</span>
-                </React.Fragment>
-              ))}
+              <h1 id="hero-h" className="df-enter-line df-enter-d1">
+                Designing digital experiences with absolute clarity.
+              </h1>
+
+              <p className="hero__lead df-enter-line df-enter-d2">
+                A focused team combining strategy, design and development to create thoughtful digital experiences for ambitious businesses.
+              </p>
+
+              <div className="btn-row df-enter-line df-enter-d3">
+                <a
+                  href="#contact"
+                  onClick={(e) => onNavigateSection(e, '#contact')}
+                  className="btn btn--primary"
+                >
+                  Start a Project
+                  <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+                    <path className="m-arrow__stem" d="M1 6h8" />
+                    <path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" />
+                  </svg>
+                </a>
+                <a
+                  href="#work"
+                  onClick={(e) => onNavigateSection(e, '#work')}
+                  className="btn btn--secondary"
+                >
+                  View Our Work
+                </a>
+              </div>
+
+              <dl className="hero-facts df-enter-line df-enter-d4">
+                <div className="col-span-3">
+                  <dt>Location</dt>
+                  <dd>Based in India · Working worldwide</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div className="hero-visual hero__media span-6 df-start-7 df-enter-media">
+              <img
+                src={`${BASE}assets/img/photo-f89043163.jpg`}
+                srcSet={`${BASE}assets/img/photo-f89043163-960.jpg 960w, ${BASE}assets/img/photo-f89043163.jpg 1280w`}
+                sizes="(max-width: 1023px) 100vw, 60vw"
+                width="1280"
+                height="928"
+                alt="Architectural grid drawing and pigment swatch studies pinned to a studio wall"
+                fetchPriority="high"
+                decoding="async"
+                data-source="stand-in"
+                data-subject="studio"
+              />
+              <div className="ly-float">
+                <div className="ly-float__row">
+                  <span className="ly-live">Independent Digital Team</span>
+                </div>
+                <div className="ly-float__title">Based in India · Working worldwide</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Work Section */}
-      <section id="work" className="relative py-20 md:py-32">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-20 pb-10 border-b border-line/50 mb-12 md:mb-20 md:items-end md:justify-between">
-            <div className="md:max-w-[50%]">
-              <span className="flex items-center gap-4 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
-                <span className="text-white/40">01</span> <span className="flex-1 h-px bg-white/20 max-w-[80px]"></span> Selected Work
-              </span>
-              <Reveal><h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold max-w-[20ch]">Concept work, made to explore our approach.</h2></Reveal>
+      {/* 2. POSITIONING & GLOBAL REACH (ground-surface + word-highlight moment + HeroGlobe) */}
+      <section className="section section--flow ground-surface" aria-labelledby="positioning-h">
+        <div className="wrap">
+          <div className="grid grid--top gap-y-10">
+            <div className="span-6 flex flex-col gap-6">
+              <h2 id="positioning-h" className="t-h2">
+                A team with a <span className="muted">focused way of working.</span>
+              </h2>
+
+              <div data-moment="word-highlight">
+                <p className="mo-wh__text text-[20px] md:text-[24px] leading-[1.45] tracking-[-0.015em] font-normal max-w-[44ch] text-[var(--ink)]">
+                  We bring <strong>design</strong>, development and project coordination together in one flexible team — allowing us to stay close to the work and communicate directly with the people we build for.
+                </p>
+              </div>
+
+              <p className="text-[16px] text-[var(--ink)] pt-2">
+                Working remotely with businesses across the UK, US, Canada and beyond.
+              </p>
             </div>
-            <Reveal className="md:max-w-[45%]">
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[48ch] font-normal tracking-tight">A selection of concepts and self-initiated projects created to explore how we think about design, development and digital experiences. These are not paid client engagements.</p>
-            </Reveal>
+
+            <div className="span-6 df-start-7 h-[320px] md:h-[380px]">
+              <HeroGlobe />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-16 md:gap-24">
-            {[
-              { num: '01', name: 'FINORA', type: 'Fintech Website Concept', tags: 'Website Design · UX · Development', bgClass: 'bg-finora-placeholder', tag: 'Concept Project' },
-              { num: '02', name: 'NORTHLINE', type: 'Architecture Brand Concept', tags: 'Identity · Website · Art Direction', bgClass: 'bg-northline-placeholder', tag: 'Self-Initiated' },
-              { num: '03', name: 'AUREL', type: 'Premium Commerce Concept', tags: 'UX · E-commerce · Development', bgClass: 'bg-aurel-placeholder', tag: 'Concept Design' }
-            ].map(proj => (
-              <Reveal key={proj.num}>
-                <a href="#" className="block group">
-                  <div className="grid grid-cols-[auto_1fr_auto] items-baseline gap-6 md:gap-12 mb-8 md:mb-10">
-                    <span className="text-[13px] tracking-[0.15em] text-white/40 pt-1 font-semibold">{proj.num}</span>
-                    <div className="min-w-0">
-                      <h3 className="text-[36px] md:text-[52px] lg:text-[64px] font-semibold tracking-tighter leading-[1.05] text-white/90 group-hover:text-white transition-colors">{proj.name}</h3>
-                      <p className="mt-3 text-[17px] md:text-[19px] tracking-tight text-[#a1a1a6] font-normal">{proj.type}</p>
-                      <p className="mt-2 text-[12px] tracking-[0.1em] uppercase text-white/40 font-semibold">{proj.tags}</p>
-                    </div>
-                    <span className="text-[24px] md:text-[32px] text-white/30 transform transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-white font-light">↗</span>
+          {/* Disciplines strip */}
+          <div className="mt-14 md:mt-16 df-subgrid-6">
+            {DISCIPLINES.map((txt, i) => (
+              <div key={txt} className="pt-4 border-t border-[var(--line)] flex items-baseline gap-2.5">
+                <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
+                  0{i + 1}
+                </span>
+                <span className="text-[16px] font-medium text-[var(--ink)]">{txt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. SELECTED WORK (ground-base · 3-up tile grid with real vetted photography) */}
+      <section id="work" className="section section--flow ground-base" aria-labelledby="work-h">
+        <div className="wrap">
+          <p className="t-label text-[var(--muted)] mb-4">01 · Selected Work</p>
+          <div className="grid grid--top gap-y-6 mb-12">
+            <div className="span-6">
+              <h2 id="work-h">Concept work, made to explore our approach.</h2>
+            </div>
+            <div className="span-6 df-start-7">
+              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
+                A selection of concepts and self-initiated projects created to explore how we think about design, development and digital experiences. These are not paid client engagements.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-y-8">
+            {PROJECTS.map((proj) => (
+              <a
+                key={proj.num}
+                href="#contact"
+                onClick={(e) => onNavigateSection(e, '#contact')}
+                className="span-4 work-tile group"
+              >
+                <div className="work-tile__media">
+                  <img
+                    className="work-tile__img"
+                    src={proj.img}
+                    srcSet={proj.srcSet}
+                    sizes="(max-width: 1023px) 100vw, 33vw"
+                    width="960"
+                    height="720"
+                    alt={proj.alt}
+                    loading="lazy"
+                    decoding="async"
+                    data-source="library-057"
+                    data-subject={proj.subject}
+                  />
+                </div>
+
+                <div className="p-6 flex flex-col flex-1 gap-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
+                      {proj.num} · {proj.tag}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="text-[18px] text-[var(--muted)] group-hover:text-[var(--action)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                    >
+                      ↗
+                    </span>
                   </div>
-                  
-                  <div className="relative overflow-hidden rounded-[24px] md:rounded-[32px] aspect-[4/3] md:aspect-[16/9] bg-[#111111] border border-white/5">
-                    <div className={`absolute inset-[-5%] ${proj.bgClass} transition-transform duration-700 group-hover:scale-[1.02]`}></div>
-                    <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-6 md:bottom-8 flex justify-between items-end z-10 pointer-events-none">
-                      <span className="text-[11px] md:text-[12px] tracking-[0.15em] uppercase text-white/90 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 font-semibold border border-white/10">{proj.tag}</span>
-                      <span className="text-[48px] md:text-[64px] font-semibold tracking-tighter leading-none text-white/15 select-none">{proj.num}</span>
-                    </div>
-                  </div>
-                </a>
-              </Reveal>
+
+                  <h3 className="df-h3 text-[var(--ink)]">{proj.name}</h3>
+
+                  <p className="text-[16px] text-[var(--ink)]">{proj.type}</p>
+
+                  <p className="mt-auto pt-3 text-[13px] font-medium text-[var(--muted)]">
+                    {proj.tags}
+                  </p>
+                </div>
+              </a>
             ))}
           </div>
 
-          <p className="mt-16 md:mt-24 text-[15px] md:text-[17px] tracking-tight text-[#a1a1a6] max-w-[56ch] leading-[1.5] font-normal border-t border-line/50 pt-8">
+          <p className="mt-10 text-[16px] text-[var(--ink)] max-w-[62ch]">
             These concepts are internal explorations — not paid client work. We label them clearly so you can judge the thinking and craft for what it is.
           </p>
         </div>
       </section>
 
-      {/* Capabilities Section */}
-      <section id="services" className="relative py-20 md:py-32 bg-[#050505] border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12 md:mb-20 md:items-end md:justify-between">
-            <div className="md:max-w-[50%]">
-              <span className="flex items-center gap-4 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
-                <span className="text-white/40">02</span> <span className="flex-1 h-px bg-white/20 max-w-[80px]"></span> Capabilities
-              </span>
-              <Reveal><h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold text-white">What we can build.</h2></Reveal>
+      {/* 4. CAPABILITIES (ground-surface · 2x2 architectural cards, open on load & interactively toggleable) */}
+      <section id="services" className="section section--flow ground-surface" aria-labelledby="services-h">
+        <div className="wrap">
+          <p className="t-label text-[var(--muted)] mb-4">02 · Capabilities</p>
+          <div className="grid grid--top gap-y-6 mb-12">
+            <div className="span-6">
+              <h2 id="services-h">What we can build.</h2>
             </div>
-            <Reveal className="md:max-w-[45%]">
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] font-normal max-w-[48ch] tracking-tight">
+            <div className="span-6 df-start-7">
+              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
                 Four connected areas of work. We often combine them — but each can stand on its own depending on what a project actually needs. Open a service to see what's inside.
               </p>
-            </Reveal>
-          </div>
-
-          <Reveal className="border-t border-line/70">
-            <Accordion 
-              num="01" title="Web Design" tag="Strategy · UX / UI · Visual Direction" 
-              isOpen={activeService === 1} onClick={() => setActiveService(activeService === 1 ? null : 1)}
-              desc="Strategy, information architecture, UX/UI, responsive design and visual direction. We start with the content and the goal — not the layout — so every decision has a reason behind it."
-              items={[
-                { title: "Information Architecture", desc: "We map the pages, the hierarchy and the navigation before any layout decisions are made — so the structure holds up as the site grows." },
-                { title: "UX / UI Design", desc: "Interface design grounded in real content and real user flows — not placeholder text and lorem ipsum." },
-                { title: "Visual Direction", desc: "Typography, colour, spacing and imagery defined as a system that stays consistent across every page and screen." }
-              ]}
-            />
-            <Accordion 
-              num="02" title="Web Development" tag="Front-End · CMS · Performance" 
-              isOpen={activeService === 2} onClick={() => setActiveService(activeService === 2 ? null : 2)}
-              desc="Fast, responsive and maintainable websites built around each project's requirements. Semantic markup, lightweight JavaScript and performance treated as a design decision."
-              items={[
-                { title: "Front-End Development", desc: "Semantic HTML, modern CSS and lightweight JavaScript — built to be read, extended and maintained by another developer." },
-                { title: "CMS Integration", desc: "Content modelled around how the team actually writes, publishes and updates — not around a template." }
-              ]}
-            />
-            <Accordion 
-              num="03" title="Brand Identity" tag="Typography · Colour · Visual Systems" 
-              isOpen={activeService === 3} onClick={() => setActiveService(activeService === 3 ? null : 3)}
-              desc="Visual systems, identity direction, typography, colour and digital brand expression. Rules that hold up across every surface — from a favicon to a full site."
-              items={[
-                { title: "Identity Direction", desc: "A visual direction that comes from strategy — the market, the audience and the story — not from a mood board alone." }
-              ]}
-            />
-            <Accordion 
-              num="04" title="Digital Experiences" tag="Interactivity · Motion · Immersive" 
-              isOpen={activeService === 4} onClick={() => setActiveService(activeService === 4 ? null : 4)}
-              desc="Interactive components, fluid motion, and immersive 3D/WebGL experiences that elevate standard interfaces."
-              items={[
-                { title: "Motion & Interaction", desc: "Using animation to guide attention and explain functionality, rather than just decorating." }
-              ]}
-            />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Who We Work With */}
-      <section className="relative py-20 md:py-32">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-10 md:gap-20 items-start pb-16 md:pb-20 border-b border-line/50">
-            <Reveal>
-              <h2 className="text-[28px] md:text-[40px] leading-[1.1] tracking-tight font-semibold text-white">Who we work with.</h2>
-            </Reveal>
-            <Reveal>
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[48ch] font-normal tracking-tight">
-                We partner with ambitious teams who value design and technical craft. Our structure suits projects where direct communication and focused execution matter.
-              </p>
-            </Reveal>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-y-10 gap-x-8 pt-16 md:pt-20">
-            {[
-              { t: "Startups & Tech", d: "Early-stage and growing tech companies needing clear product communication." },
-              { t: "Studios & Agencies", d: "Creative teams looking for a reliable development partner." },
-              { t: "B2B Services", d: "Professional services requiring a high-quality digital presence." },
-              { t: "Architecture & Design", d: "Firms needing portfolio sites that respect the work." },
-              { t: "E-Commerce", d: "Independent brands focused on premium shopping experiences." }
-            ].map((item, idx) => (
-              <Reveal key={idx} className="flex flex-col gap-3">
-                <div className="text-[12px] tracking-[0.15em] text-white/40 font-semibold">0{idx + 1}</div>
-                <div className="text-[19px] md:text-[21px] font-semibold tracking-tight text-white">{item.t}</div>
-                <div className="text-[15px] md:text-[16px] text-[#a1a1a6] leading-[1.4] font-normal tracking-tight">{item.d}</div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Approach / Process */}
-      <section id="approach" className="relative py-20 md:py-32 bg-[#050505] border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <span className="flex items-center gap-4 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
-            <span className="text-white/40">03</span> <span className="flex-1 h-px bg-white/20 max-w-[80px]"></span> How We Work
-          </span>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-[100px]">
-            <Reveal>
-              <h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold text-white mb-6">Process</h2>
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] font-normal max-w-[38ch] tracking-tight">
-                A methodical approach to design and development. We move from understanding the core problem to designing the system, and finally building the product.
-              </p>
-            </Reveal>
-            <div className="flex flex-col border-t border-line/70">
-              {[
-                { title: "Discover", desc: "Understanding the audience, the goals and the constraints." },
-                { title: "Define", desc: "Information architecture and wireframing the core structure." },
-                { title: "Design", desc: "Creating the visual system and applying it to the interfaces." },
-                { title: "Build", desc: "Writing the front-end code and integrating the back-end systems." },
-                { title: "Launch", desc: "Testing, deployment and handing over the final product." }
-              ].map((step, idx) => (
-                <Reveal key={idx} className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 md:gap-10 py-6 md:py-10 border-b border-line/50 group">
-                  <div className="text-[12px] tracking-[0.15em] uppercase text-white/40 pt-1.5 font-semibold">Phase 0{idx + 1}</div>
-                  <div className="flex flex-col md:flex-row gap-2 md:gap-8 md:items-baseline">
-                    <div className="text-[28px] md:text-[36px] font-medium tracking-tight text-white/90 md:w-1/3 group-hover:text-white transition-colors">{step.title}</div>
-                    <div className="text-[17px] md:text-[19px] text-[#a1a1a6] font-normal tracking-tight flex-1">{step.desc}</div>
-                  </div>
-                </Reveal>
-              ))}
             </div>
           </div>
+
+          <div className="df-subgrid-2">
+            {SERVICES.map((service) => {
+              const isOpen = openServices.has(service.id);
+              const panelId = `service-panel-${service.id}`;
+              return (
+                <article key={service.id} className="card m-nolift p-6 md:p-8 flex flex-col gap-5">
+                  <button
+                    type="button"
+                    onClick={() => toggleService(service.id)}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    className="w-full block text-left group cursor-pointer"
+                  >
+                    <span className="w-full flex items-start justify-between gap-4">
+                      <span className="flex flex-col gap-1.5 min-w-0">
+                        <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                          {service.num} · {service.tag}
+                        </span>
+                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--action)] transition-colors">
+                          {service.title}
+                        </h3>
+                      </span>
+
+                      <span
+                        aria-hidden="true"
+                        className={`w-9 h-9 rounded-full border border-[var(--line-strong)] inline-grid place-items-center shrink-0 transition-transform duration-200 ${
+                          isOpen ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)] rotate-90' : 'text-[var(--ink)]'
+                        }`}
+                      >
+                        →
+                      </span>
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div id={panelId} className="flex flex-col gap-5 pt-2">
+                      <p className="text-[16px] leading-[1.6] text-[var(--ink)]">
+                        {service.desc}
+                      </p>
+                      {service.items && service.items.length > 0 && (
+                        <ul className="flex flex-col gap-4 pt-4 border-t border-[var(--line)]">
+                          {service.items.map((item, idx) => (
+                            <li key={idx} className="flex flex-col gap-1">
+                              <h4 className="text-[17px] font-medium text-[var(--ink)]">{item.title}</h4>
+                              <p className="text-[16px] leading-[1.55] text-[var(--ink)]">{item.desc}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Why This Team */}
-      <section className="relative py-20 md:py-32 border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <Reveal>
-            <h2 className="text-[28px] md:text-[40px] leading-[1.1] tracking-tight font-semibold text-white mb-12 md:mb-20">Why this team.</h2>
-          </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-10">
-            {[
-              { t: "Direct communication", d: "You talk directly to the people designing and building your site. No layers of account management." },
-              { t: "Focused execution", d: "We take on a limited number of projects to ensure every client gets the attention required." },
-              { t: "Flexible collaboration", d: "We integrate with internal teams, or handle the entire process from start to finish." },
-              { t: "Design + dev together", d: "Because we do both, design decisions aren't compromised during development." }
-            ].map((item, idx) => (
-              <Reveal key={idx} className="flex flex-col gap-4 border-t border-line/50 pt-6">
-                <div className="text-[20px] md:text-[24px] font-semibold tracking-tight text-white">{item.t}</div>
-                <div className="text-[16px] md:text-[17px] text-[#a1a1a6] leading-[1.5] font-normal tracking-tight">{item.d}</div>
-              </Reveal>
+      {/* 5. WHO WE WORK WITH (ground-base · 5 client types) */}
+      <section className="section section--flow ground-base" aria-labelledby="clients-h">
+        <div className="wrap">
+          <div className="grid grid--top gap-y-6 mb-12">
+            <div className="span-6">
+              <h2 id="clients-h">Who we work with.</h2>
+            </div>
+            <div className="span-6 df-start-7">
+              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
+                We partner with ambitious teams who value design and technical craft. Our structure suits projects where direct communication and focused execution matter.
+              </p>
+            </div>
+          </div>
+
+          <div className="df-subgrid-5">
+            {CLIENT_TYPES.map((item, idx) => (
+              <article key={item.t} className="card m-nolift justify-between p-6">
+                <div className="flex flex-col gap-2.5">
+                  <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                    0{idx + 1}
+                  </span>
+                  <h3 className="df-h3 text-[var(--ink)]">{item.t}</h3>
+                </div>
+                <p className="text-[16px] leading-[1.55] text-[var(--ink)] mt-4">{item.d}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* The Studio */}
-      <section id="studio" className="relative py-20 md:py-32 bg-[#050505] border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <span className="flex items-center gap-4 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-8 md:mb-12">
-            <span className="text-white/40">04</span> <span className="flex-1 h-px bg-white/20 max-w-[80px]"></span> The Studio
-          </span>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-start">
-            <div className="flex flex-col gap-8 md:gap-10">
-              <Reveal><h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold text-white">An independent structure.</h2></Reveal>
-              <Reveal><p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[48ch] font-normal tracking-tight">
+      {/* 6. APPROACH / PROCESS (ground-surface · split left intro + ruled rows right) */}
+      <section id="approach" className="section section--flow ground-surface" aria-labelledby="approach-h">
+        <div className="wrap">
+          <p className="t-label text-[var(--muted)] mb-4">03 · How We Work</p>
+          <div className="grid grid--top gap-y-10">
+            <div className="span-6 stack-4">
+              <h2 id="approach-h">Process</h2>
+              <p className="t-lead text-[var(--ink)] max-w-[40ch]">
+                A methodical approach to design and development. We move from understanding the core problem to designing the system, and finally building the product.
+              </p>
+            </div>
+
+            <ol className="span-6 df-start-7">
+              {PROCESS_STEPS.map((step, idx) => (
+                <li
+                  key={step.title}
+                  className="py-5 first:pt-0 border-b border-[var(--line)] grid grid-cols-1 sm:grid-cols-[100px_1fr] gap-2 sm:gap-5 items-baseline"
+                >
+                  <span className="text-[13px] font-medium tabular-nums text-[var(--muted)]">
+                    Phase 0{idx + 1}
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="df-h3 text-[var(--ink)]">{step.title}</h3>
+                    <p className="text-[16px] leading-[1.55] text-[var(--ink)]">{step.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. WHY THIS TEAM (ground-base · 4-up architectural columns) */}
+      <section className="section section--flow ground-base" aria-labelledby="why-h">
+        <div className="wrap">
+          <div className="section-head">
+            <h2 id="why-h">Why this team.</h2>
+          </div>
+
+          <div className="grid gap-y-8">
+            {TEAM_ADVANTAGES.map((item, idx) => (
+              <article
+                key={item.t}
+                className="span-3 card m-nolift p-6 justify-between gap-4"
+              >
+                <div className="flex flex-col gap-2">
+                  <span className="text-[13px] font-medium tabular-nums text-[var(--action)]">
+                    0{idx + 1}
+                  </span>
+                  <h3 className="df-h3 text-[var(--ink)]">{item.t}</h3>
+                </div>
+                <p className="text-[16px] leading-[1.55] text-[var(--ink)]">{item.d}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. THE STUDIO (ground-surface · roles + picture-develops film moment) */}
+      <section id="studio" className="section section--flow ground-surface" aria-labelledby="studio-h">
+        <div className="wrap">
+          <p className="t-label text-[var(--muted)] mb-4">04 · The Studio</p>
+          <div className="grid grid--top gap-y-10">
+            <div className="span-6 flex flex-col gap-6">
+              <h2 id="studio-h">An independent structure.</h2>
+              <p className="t-lead text-[var(--ink)] max-w-[46ch]">
                 We operate as a core unit, bringing in specialised partners — copywriters, illustrators, 3D artists — only when a project demands it. This keeps the process lean and the output focused.
-              </p></Reveal>
-              
-              <div className="grid grid-cols-2 gap-y-10 gap-x-8 mt-2 border-t border-line/50 pt-10">
-                {[
-                  { r: "Project Lead", n: "Strategy & Direction" },
-                  { r: "Design", n: "UX / UI & Visual" },
-                  { r: "Development", n: "Front-End & CMS" },
-                  { r: "Coordination", n: "Timeline & QA" }
-                ].map((role, idx) => (
-                  <Reveal key={idx} className="flex flex-col gap-2">
-                    <div className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">{role.r}</div>
-                    <div className="text-[19px] md:text-[21px] font-medium tracking-tight text-white/90">{role.n}</div>
-                  </Reveal>
+              </p>
+
+              <div className="df-subgrid-2 mt-2 pt-6">
+                {STUDIO_ROLES.map((role) => (
+                  <div key={role.r} className="pt-3 border-t border-[var(--line)] flex flex-col gap-1">
+                    <span className="text-[13px] font-medium text-[var(--muted)]">{role.r}</span>
+                    <span className="text-[18px] font-medium text-[var(--ink)]">{role.n}</span>
+                  </div>
                 ))}
               </div>
             </div>
-            
-            <Reveal className="aspect-square bg-[#111111] rounded-[24px] border border-white/5 relative overflow-hidden flex flex-col justify-center items-center text-center p-8">
-               <div className="text-white/20 mb-5">
-                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                   <polyline points="21 15 16 10 5 21"></polyline>
-                 </svg>
-               </div>
-               <p className="text-[12px] tracking-[0.15em] uppercase text-white/30 font-semibold">Studio Image Placeholder</p>
-               <p className="text-[13px] text-white/20 mt-2 font-normal">(Awaiting final asset)</p>
-            </Reveal>
+
+            <figure
+              className="studio-develop span-6 df-start-7"
+              data-moment="picture-develops"
+            >
+              <img
+                src={`${BASE}assets/img/photo-d183.jpg`}
+                srcSet={`${BASE}assets/img/photo-d183-500.jpg 500w, ${BASE}assets/img/photo-d183-960.jpg 960w, ${BASE}assets/img/photo-d183.jpg 1280w`}
+                sizes="(max-width: 1023px) 100vw, 50vw"
+                width="1280"
+                height="853"
+                alt="Open blank notebook with a ribbon marker and a pencil lying across the pages on a wooden studio table"
+                loading="lazy"
+                decoding="async"
+                data-source="library-057"
+                data-subject="desk"
+              />
+            </figure>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="relative py-20 md:py-32 border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-[100px]">
-            <Reveal>
-              <h2 className="text-[28px] md:text-[40px] leading-[1.1] tracking-tight font-semibold text-white">Questions.</h2>
-            </Reveal>
-            <Reveal className="border-t border-line/70">
-              {[
-                { q: "How long does a typical project take?", a: "Most projects take between 6 to 12 weeks from strategy to launch, depending on the complexity of the requirements and the speed of feedback." },
-                { q: "Do you work with startups?", a: "Yes. We frequently work with early-stage companies to establish their initial digital presence and product marketing sites." },
-                { q: "What technologies do you use?", a: "We build primarily with React, Next.js, and modern CSS for the front-end, integrated with headless CMS platforms like Sanity or Prismic." },
-                { q: "Can you help with branding first?", a: "Yes, we often handle brand identity and visual direction as the first phase before moving into web design and development." },
-                { q: "Do you maintain the site after launch?", a: "Yes, we offer ongoing support and maintenance retainers for clients who want continuous iterations and improvements." },
-                { q: "How do you handle project management?", a: "We use shared tools (like Notion or Linear) and schedule regular check-ins. You communicate directly with the team doing the work." },
-                { q: "What is your pricing structure?", a: "We provide fixed-price proposals based on a defined scope of work after our initial discovery conversations." }
-              ].map((faq, idx) => (
-                <Accordion 
-                  key={idx}
-                  num={`0${idx + 1}`} 
-                  title={faq.q} 
-                  isOpen={activeFaq === idx} 
-                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  desc={faq.a}
-                />
-              ))}
-            </Reveal>
+      {/* 9. QUESTIONS / FAQ (ground-base · split layout with all 7 answers open by default) */}
+      <section className="section section--flow ground-base" aria-labelledby="faq-h">
+        <div className="wrap">
+          <div className="grid grid--top gap-y-10">
+            <div className="span-6 stack-4">
+              <h2 id="faq-h">Questions.</h2>
+            </div>
+
+            <div className="span-6 df-start-7">
+              {FAQS.map((faq, idx) => {
+                const isOpen = openFaqs.has(idx);
+                const faqPanelId = `faq-panel-${idx}`;
+                return (
+                  <article key={faq.q} className="border-b border-[var(--line)] py-5 first:pt-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleFaq(idx)}
+                      aria-expanded={isOpen}
+                      aria-controls={faqPanelId}
+                      className="w-full block text-left group cursor-pointer"
+                    >
+                      <span className="w-full flex items-baseline justify-between gap-4">
+                        <h3 className="df-h3 text-[var(--ink)] group-hover:text-[var(--action)] transition-colors">
+                          {faq.q}
+                        </h3>
+                        <span
+                          aria-hidden="true"
+                          className={`text-[18px] text-[var(--muted)] shrink-0 transition-transform duration-200 ${
+                            isOpen ? 'rotate-90 text-[var(--action)]' : ''
+                          }`}
+                        >
+                          →
+                        </span>
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <p id={faqPanelId} className="mt-2.5 text-[16px] leading-[1.6] text-[var(--ink)] max-w-[58ch]">
+                        {faq.a}
+                      </p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="relative py-20 md:py-32 bg-[#080808] border-t border-line/50">
-        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <span className="flex items-center gap-4 text-[12px] font-semibold tracking-[0.15em] uppercase text-[#a1a1a6] mb-10 md:mb-16">
-            <span className="text-white/40">05</span> <span className="flex-1 h-px bg-white/20 max-w-[80px]"></span> Contact
-          </span>
-          <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-20 items-start">
-            <Reveal>
-              <h2 className="text-[32px] md:text-[44px] lg:text-[52px] leading-[1.08] tracking-tight font-semibold mb-6 text-white max-w-[16ch]">Let's build something worth putting your name on.</h2>
-              <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#a1a1a6] max-w-[36ch] font-normal tracking-tight">Share a few details and we'll come back within one business day with next steps.</p>
-              <dl className="mt-10 md:mt-16 grid gap-5 border-t border-line/50 pt-8 md:pt-12">
-                <div className="grid grid-cols-[80px_1fr] gap-4 items-baseline text-[16px]">
-                  <dt className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Email</dt>
-                  <dd><a href="mailto:hello@deepfons.studio" className="text-white/80 border-b border-white/30 hover:border-white hover:text-white transition-colors pb-0.5">hello@deepfons.studio</a></dd>
+      {/* 10. CONTACT SECTION (ground-surface · accessible form aligned to shared split line) */}
+      <section id="contact" className="section section--flow ground-surface" aria-labelledby="contact-h">
+        <div className="wrap">
+          <p className="t-label text-[var(--muted)] mb-4">05 · Contact</p>
+          <div className="grid grid--top gap-y-12">
+            <div className="span-6 stack-5">
+              <h2 id="contact-h" className="max-w-[18ch]">
+                Let's build something worth putting your name on.
+              </h2>
+              <p className="t-lead text-[var(--ink)] max-w-[38ch]">
+                Share a few details and we'll come back within one business day with next steps.
+              </p>
+
+              <dl className="mt-6 pt-6 border-t border-[var(--line)] grid gap-3">
+                <div className="flex items-baseline gap-6">
+                  <dt className="text-[13px] font-medium text-[var(--muted)] w-14">Email</dt>
+                  <dd className="m-0">
+                    <a href="mailto:hello@deepfons.studio" className="link text-[16px]">
+                      hello@deepfons.studio
+                    </a>
+                  </dd>
                 </div>
               </dl>
-            </Reveal>
-            
-            <Reveal>
-              <form className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-10 bg-[#111111] p-6 md:p-12 rounded-[24px] border border-white/5 backdrop-blur-sm">
-                <div className="flex flex-col gap-3">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Name</label>
-                  <input type="text" placeholder="Your full name" className="w-full bg-transparent border-0 border-b border-white/20 pb-3 pt-2 text-[17px] font-normal tracking-tight focus:outline-none focus:border-white transition-colors text-white placeholder-white/20" />
+            </div>
+
+            <div className="span-6 df-start-7">
+              <form
+                action="mailto:hello@deepfons.studio"
+                method="post"
+                encType="text/plain"
+                onSubmit={handleFormSubmit}
+                noValidate
+                className="form bg-[var(--p-bg)] border border-[var(--line)] rounded-[var(--r-lg)] p-6 md:p-8"
+              >
+                <div className="field">
+                  <label htmlFor="f-name">Name</label>
+                  <input
+                    id="f-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your full name"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                    }}
+                    aria-invalid={errors.name ? 'true' : undefined}
+                    aria-describedby="f-name-err"
+                    required
+                  />
+                  <p className="field__error" id="f-name-err" hidden={!errors.name}>
+                    {errors.name}
+                  </p>
                 </div>
-                <div className="flex flex-col gap-3">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Work email</label>
-                  <input type="email" placeholder="you@company.com" className="w-full bg-transparent border-0 border-b border-white/20 pb-3 pt-2 text-[17px] font-normal tracking-tight focus:outline-none focus:border-white transition-colors text-white placeholder-white/20" />
+
+                <div className="field">
+                  <label htmlFor="f-email">Work email</label>
+                  <input
+                    id="f-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    placeholder="you@company.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                    }}
+                    aria-invalid={errors.email ? 'true' : undefined}
+                    aria-describedby="f-email-err"
+                    required
+                  />
+                  <p className="field__error" id="f-email-err" hidden={!errors.email}>
+                    {errors.email}
+                  </p>
                 </div>
-                <div className="flex flex-col gap-3 col-span-1 sm:col-span-2">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Company (Optional)</label>
-                  <input type="text" placeholder="Your organisation" className="w-full bg-transparent border-0 border-b border-white/20 pb-3 pt-2 text-[17px] font-normal tracking-tight focus:outline-none focus:border-white transition-colors text-white placeholder-white/20" />
-                </div>
-                <div className="flex flex-col gap-3">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">What do you need?</label>
-                  <CustomSelect 
-                    placeholder="Select a service" 
-                    options={[
-                      { value: 'design', label: 'Web Design & UX' },
-                      { value: 'development', label: 'Web Development' },
-                      { value: 'brand', label: 'Brand Identity' },
-                      { value: 'full', label: 'Full Website Creation' },
-                      { value: 'other', label: 'Other' }
-                    ]}
+
+                <div className="field field--full">
+                  <label htmlFor="f-company">Company (Optional)</label>
+                  <input
+                    id="f-company"
+                    name="company"
+                    type="text"
+                    autoComplete="organization"
+                    placeholder="Your organisation"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
                   />
                 </div>
-                <div className="flex flex-col gap-3">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Budget range</label>
-                  <CustomSelect 
-                    placeholder="Select a budget" 
-                    options={[
-                      { value: 'small', label: '$5k - $10k' },
-                      { value: 'medium', label: '$10k - $25k' },
-                      { value: 'large', label: '$25k - $50k' },
-                      { value: 'xlarge', label: '$50k+' }
-                    ]}
+
+                <div className="field">
+                  <label id="f-service-label" htmlFor="f-service">What do you need?</label>
+                  <CustomSelect
+                    id="f-service"
+                    labelId="f-service-label"
+                    placeholder="Select a service"
+                    options={SERVICE_OPTIONS}
+                    value={serviceType}
+                    onChange={setServiceType}
                   />
                 </div>
-                <div className="flex flex-col gap-3 col-span-1 sm:col-span-2">
-                  <label className="text-[12px] tracking-[0.15em] uppercase text-white/40 font-semibold">Project details</label>
-                  <textarea placeholder="Goals, timeline, anything relevant…" className="w-full bg-transparent border-0 border-b border-white/20 pb-3 pt-2 text-[17px] font-normal tracking-tight focus:outline-none focus:border-white transition-colors text-white placeholder-white/20 min-h-[100px] resize-y"></textarea>
+
+                <div className="field">
+                  <label id="f-budget-label" htmlFor="f-budget">Budget range</label>
+                  <CustomSelect
+                    id="f-budget"
+                    labelId="f-budget-label"
+                    placeholder="Select a budget"
+                    options={BUDGET_OPTIONS}
+                    value={budget}
+                    onChange={setBudget}
+                  />
                 </div>
-                <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mt-4">
-                  <span className="text-[14px] text-white/40 leading-[1.5] max-w-[200px] font-normal tracking-tight">We reply within one business day.</span>
-                  <button type="submit" className="relative inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-white text-black rounded-full text-[15px] font-semibold hover:bg-[#E8E8E8] transition-colors duration-300 min-h-[48px] w-full sm:w-auto group">
-                    Send Enquiry <span className="transform transition-transform duration-300 group-hover:translate-x-1">→</span>
+
+                <div className="field field--full">
+                  <label htmlFor="f-details">Project details</label>
+                  <textarea
+                    id="f-details"
+                    name="details"
+                    placeholder="Goals, timeline, anything relevant…"
+                    value={details}
+                    onChange={(e) => {
+                      setDetails(e.target.value);
+                      if (errors.details) setErrors((prev) => ({ ...prev, details: undefined }));
+                    }}
+                    aria-invalid={errors.details ? 'true' : undefined}
+                    aria-describedby="f-details-err"
+                    required
+                  />
+                  <p className="field__error" id="f-details-err" hidden={!errors.details}>
+                    {errors.details}
+                  </p>
+                </div>
+
+                <div className="field--full flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                  <span className="text-[14px] text-[var(--muted)]">
+                    We reply within one business day.
+                  </span>
+                  <button type="submit" className="btn btn--primary w-full sm:w-auto">
+                    Send Enquiry
+                    <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+                      <path className="m-arrow__stem" d="M1 6h8" />
+                      <path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" />
+                    </svg>
                   </button>
                 </div>
+
+                <p className="form__status" role="status">
+                  {formStatus}
+                </p>
               </form>
-            </Reveal>
+            </div>
           </div>
         </div>
       </section>
     </main>
   );
-};
-
-export default Home;
+}

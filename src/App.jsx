@@ -1,263 +1,311 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import Lenis from '@studio-freight/lenis';
-import { Command, X } from 'lucide-react';
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
-import Loader from './components/Loader';
+import BrandMark from './components/BrandMark';
 import Home from './pages/Home';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfConditions from './pages/TermsOfConditions';
 
+const NAV_LINKS = [
+  { label: 'Work', id: '#work' },
+  { label: 'Services', id: '#services' },
+  { label: 'Approach', id: '#approach' },
+  { label: 'Studio', id: '#studio' },
+];
+
+const MOBILE_LINKS = [
+  { name: 'Home', path: '#top' },
+  { name: 'Work', path: '#work' },
+  { name: 'Services', path: '#services' },
+  { name: 'Approach', path: '#approach' },
+  { name: 'Studio', path: '#studio' },
+  { name: 'Contact', path: '#contact' },
+];
+
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { scrollY } = useScroll();
-  const headerBg = useTransform(scrollY, [0, 80], ["rgba(10, 10, 10, 0)", "rgba(10, 10, 10, 0.85)"]);
-  const headerBorder = useTransform(scrollY, [0, 80], ["rgba(255,255,255,0)", "rgba(255,255,255,0.08)"]);
-  const headerBlur = useTransform(scrollY, [0, 80], ["blur(0px)", "blur(24px)"]);
+  const navigate = useNavigate();
 
-  // Initialize Lenis
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      touchMultiplier: 1.5,
-    });
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-    return () => lenis.destroy();
-  }, []);
+    document.body.classList.toggle('nav-locked', mobileMenuOpen);
+    return () => document.body.classList.remove('nav-locked');
+  }, [mobileMenuOpen]);
 
-  // Close mobile menu on route change and scroll to top
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [mobileMenuOpen]);
+
   useEffect(() => {
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (!location.state?.scrollTo) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, [location.pathname, location.state]);
+
+  useEffect(() => {
+    if (location.pathname === '/' && location.state?.scrollTo) {
+      const targetId = location.state.scrollTo;
+      requestAnimationFrame(() => {
+        const el = document.querySelector(targetId);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    }
   }, [location]);
 
-  // Force scroll to top on initial load
-  useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
-  }, []);
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
 
-  const handleNavClick = (e, id) => {
+    if (id === '#top') {
+      if (location.pathname !== '/') {
+        navigate('/');
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
     if (location.pathname === '/') {
-      e.preventDefault();
       const el = document.querySelector(id);
       if (el) {
-        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        const y = el.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
-      setMobileMenuOpen(false);
+    } else {
+      navigate('/', { state: { scrollTo: id } });
     }
   };
 
   return (
-    <div className="relative font-sans bg-black text-white antialiased overflow-x-hidden min-h-screen flex flex-col selection:bg-white selection:text-black">
-      <Loader onComplete={() => setIsLoading(false)} />
+    <>
+      {/* Fixed Opaque Navigation Bar (nav-centre) */}
+      <header className={`nav nav--centre ${mobileMenuOpen ? 'is-open' : ''}`}>
+        <div className="wrap nav__bar">
+          <a
+            className="skip-link"
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('top')?.focus?.();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            Skip to content
+          </a>
 
-      {/* Premium Glassmorphic Header */}
-      <motion.header
-        style={{ backgroundColor: headerBg, borderBottomColor: headerBorder, backdropFilter: headerBlur }}
-        className="fixed top-0 left-0 right-0 z-50 py-5 md:py-6 border-b transition-all duration-300"
-      >
-        <div className="max-w-[1440px] mx-auto px-[clamp(24px,5vw,56px)] flex items-center justify-between gap-6">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity -ml-1 md:-ml-4 relative">
-            <motion.img 
-              initial={{ clipPath: 'inset(0 100% 0 0)' }}
-              animate={{ clipPath: 'inset(0 0% 0 0)' }}
-              transition={{ delay: 3.5, duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
-              src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} 
-              alt="Deepfons Logo" 
-              className="w-[140px] md:w-[160px] h-auto object-contain" 
-            />
+          <Link
+            to="/"
+            onClick={(e) => scrollToSection(e, '#top')}
+            className="nav__logo"
+            aria-label="Deepfons home"
+          >
+            <BrandMark />
           </Link>
 
-          {/* Desktop Nav */}
-          <motion.nav 
-            initial={{ opacity: 0, filter: 'blur(16px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            transition={{ delay: 4.4, duration: 2.0, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden md:flex items-center gap-[clamp(28px,3vw,48px)]"
-          >
-            {['Work', 'Services', 'Approach', 'Studio'].map(item => (
-              <Link 
-                key={item} 
-                to={location.pathname === '/' ? '' : '/'} 
-                onClick={(e) => handleNavClick(e, `#${item.toLowerCase()}`)}
-                className="text-[13.5px] tracking-wide text-white/70 hover:text-white transition-colors duration-400 py-2 relative group"
-              >
-                {item}
-                <span className="absolute left-0 bottom-0 w-full h-px bg-white transform scale-x-0 origin-right transition-transform duration-500 group-hover:scale-x-100 group-hover:origin-left" />
-              </Link>
-            ))}
-          </motion.nav>
-
-          <motion.div 
-            initial={{ opacity: 0, filter: 'blur(16px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            transition={{ delay: 4.6, duration: 2.0, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-4"
-          >
-            <Link 
-              to={location.pathname === '/' ? '' : '/'}
-              onClick={(e) => handleNavClick(e, '#contact')} 
-              className="hidden md:inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-white text-black rounded-full text-[13.5px] hover:bg-[#E8E8E8] transition-colors min-h-[48px] group font-medium"
-            >
-              Start a Project <span className="transform transition-transform duration-500 group-hover:translate-x-1">→</span>
-            </Link>
-
-            {/* Minimalist Premium Hamburger Menu */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden flex items-center justify-center w-12 h-12 rounded-full hover:bg-white/10 transition-colors -mr-3 focus:outline-none focus:ring-2 focus:ring-white/20"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {mobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ opacity: 0, rotate: 180, scale: 0.5 }}
-                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                    exit={{ opacity: 0, rotate: -180, scale: 0.5 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                  >
-                    <X strokeWidth={1} size={24} className="text-white" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="open"
-                    initial={{ opacity: 0, rotate: -180, scale: 0.5 }}
-                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                    exit={{ opacity: 0, rotate: 180, scale: 0.5 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                  >
-                    <Command strokeWidth={1.25} size={22} className="text-white" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          </motion.div>
-        </div>
-      </motion.header>
-
-      {/* Premium Mobile Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="fixed inset-0 z-[40] bg-[#050505]/90 backdrop-blur-2xl flex flex-col px-[clamp(24px,5vw,56px)] pt-32 pb-12"
-          >
-            <nav className="flex-1 flex flex-col justify-center gap-3">
-              {[
-                { name: 'Home', path: '#top' },
-                { name: 'Work', path: '#work' },
-                { name: 'Services', path: '#services' },
-                { name: 'Approach', path: '#approach' },
-                { name: 'Studio', path: '#studio' },
-                { name: 'Contact', path: '#contact' }
-              ].map((item, i) => (
-                <div key={item.name} className="overflow-hidden py-1">
-                  <motion.div
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "-100%" }}
-                    transition={{ delay: 0.1 + i * 0.06, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                  >
-                    <Link
-                      to={location.pathname === '/' ? '' : '/'}
-                      onClick={(e) => handleNavClick(e, item.path)}
-                      className="text-[32px] md:text-[44px] font-semibold tracking-tighter block text-white/60 hover:text-white transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  </motion.div>
-                </div>
-              ))}
-            </nav>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
-              className="mt-auto pt-8 border-t border-white/10 flex flex-col gap-4"
-            >
-              <span className="text-[11px] tracking-[0.2em] uppercase text-white/40 font-semibold">
-                Studio
-              </span>
-              <div className="flex flex-col gap-2 text-[15px] text-white/60">
-                <a href="mailto:hello@deepfons.com" className="hover:text-white transition-colors">hello@deepfons.com</a>
-                <span>Based in India · Working worldwide</span>
+          <nav className="nav__links" aria-label="Main">
+            {NAV_LINKS.map((item) => (
+              <div key={item.label} className="nav__item">
+                <a
+                  href={item.id}
+                  onClick={(e) => scrollToSection(e, item.id)}
+                  className="nav__link"
+                >
+                  {item.label}
+                </a>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+          </nav>
 
-      <div className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-conditions" element={<TermsOfConditions />} />
-        </Routes>
-      </div>
-
-      {/* Premium Footer */}
-      <footer className="border-t border-line/60 py-[clamp(60px,8vw,100px)] pb-[clamp(32px,5vw,48px)] mt-auto bg-[#030303]">
-        <div className="max-w-[1440px] mx-auto px-[clamp(24px,5vw,56px)]">
-          <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-[clamp(48px,6vw,80px)] pb-[clamp(48px,7vw,80px)]">
-            <div className="flex flex-col gap-5">
-              <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity mb-2">
-                <img src={`${import.meta.env.BASE_URL}deepfonswhite.svg`} alt="Deepfons Logo" className="w-[140px] md:w-[160px] h-auto object-contain" />
-              </Link>
-              <p className="text-[14px] tracking-wide text-white/50 leading-relaxed max-w-[30ch]">
-                An independent digital design and development studio.<br /><br />
-                Based in India, working worldwide.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-6">
-              <h4 className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">Studio</h4>
-              <nav className="flex flex-col gap-4">
-                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#work')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Work</Link>
-                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#services')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Services</Link>
-                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#approach')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Approach</Link>
-                <Link to={location.pathname === '/' ? '' : '/'} onClick={(e) => handleNavClick(e, '#contact')} className="text-[14.5px] text-white/60 hover:text-white transition-colors">Contact</Link>
+          {/* Mobile Drawer Sheet */}
+          {mobileMenuOpen && (
+            <div className="fixed inset-0 top-[var(--nav)] z-40 bg-[var(--p-bg)] border-t border-[var(--line)] flex flex-col px-[var(--gut)] py-6 lg:hidden overflow-y-auto">
+              <nav className="flex flex-col" aria-label="Mobile navigation">
+                {MOBILE_LINKS.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    onClick={(e) => scrollToSection(e, item.path)}
+                    className="flex items-center justify-between min-h-[56px] border-b border-[var(--line)] text-[20px] font-medium text-[var(--p-ink)] hover:text-[var(--p-action)] transition-colors"
+                  >
+                    <span>{item.name}</span>
+                    <span aria-hidden="true" className="text-[var(--p-muted)] text-[16px]">→</span>
+                  </a>
+                ))}
               </nav>
-            </div>
 
-            <div className="flex flex-col gap-6">
-              <h4 className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">Legal</h4>
-              <nav className="flex flex-col gap-4">
-                <Link to="/privacy-policy" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Privacy Policy</Link>
-                <Link to="/terms-of-conditions" className="text-[14.5px] text-white/60 hover:text-white transition-colors">Terms of Conditions</Link>
-              </nav>
+              <div className="mt-8">
+                <a
+                  href="#contact"
+                  onClick={(e) => scrollToSection(e, '#contact')}
+                  className="btn btn--primary w-full justify-center"
+                >
+                  Start a Project
+                </a>
+              </div>
+
+              <div className="mt-auto pt-8 border-t border-[var(--line)] flex flex-col gap-2">
+                <span className="t-label text-[var(--p-muted)]">Studio</span>
+                <a
+                  href="mailto:hello@deepfons.com"
+                  className="text-[16px] font-medium text-[var(--p-ink)] hover:text-[var(--p-action)] transition-colors py-1"
+                >
+                  hello@deepfons.com
+                </a>
+                <span className="text-[14px] text-[var(--p-muted)]">Based in India · Working worldwide</span>
+              </div>
+            </div>
+          )}
+
+          <div className="nav__actions">
+            <a
+              href="#contact"
+              onClick={(e) => scrollToSection(e, '#contact')}
+              className="btn btn--primary"
+            >
+              Start a Project
+              <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+                <path className="m-arrow__stem" d="M1 6h8" />
+                <path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" />
+              </svg>
+            </a>
+          </div>
+
+          <button
+            type="button"
+            className="nav__toggle"
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+          >
+            {mobileMenuOpen ? (
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M2 5h14M2 13h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </header>
+
+      <Routes>
+        <Route path="/" element={<Home onNavigateSection={scrollToSection} />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-conditions" element={<TermsOfConditions />} />
+      </Routes>
+
+      {/* Footer (footer-dark · ground-inverse) */}
+      <footer className="footer closing closing--flow footer--dark ground-inverse" aria-label="Footer">
+        <div className="wrap">
+          <div className="closing__cta close--type">
+            <div className="section-head--split">
+              <div>
+                <h2 className="t-h2 text-[var(--ink)]">Start a Project</h2>
+                <p className="t-lead text-[var(--muted)]">
+                  We reply within one business day.
+                </p>
+              </div>
+              <a
+                href="#contact"
+                onClick={(e) => scrollToSection(e, '#contact')}
+                className="btn btn--primary"
+              >
+                Start a Project
+                <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+                  <path className="m-arrow__stem" d="M1 6h8" />
+                  <path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" />
+                </svg>
+              </a>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-[clamp(32px,5vw,48px)] border-t border-line-soft text-[12.5px] text-white/40">
-            <span>© {new Date().getFullYear()} DEEPFONS. All rights reserved.</span>
-            <div className="flex items-center gap-6">
-              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">Instagram</a>
-              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">LinkedIn</a>
-              <a href="#!" onClick={(e) => e.preventDefault()} className="hover:text-white transition-colors">Twitter (X)</a>
+          <div className="closing__links pt-8 border-t border-[var(--line)]">
+            <div className="grid">
+              <div className="span-6 stack-4">
+                <Link
+                  to="/"
+                  onClick={(e) => scrollToSection(e, '#top')}
+                  className="nav__logo text-[var(--ink)]"
+                  aria-label="Deepfons home"
+                >
+                  <BrandMark />
+                </Link>
+                <p className="footer__lede text-[var(--ink)]">
+                  An independent digital design and development studio.
+                </p>
+                <p className="text-[14px] text-[var(--muted)]">
+                  Based in India, working worldwide.
+                </p>
+              </div>
+
+              <div className="span-3 footer__col">
+                <h3>Studio</h3>
+                <ul>
+                  <li>
+                    <a href="#work" onClick={(e) => scrollToSection(e, '#work')}>Work</a>
+                  </li>
+                  <li>
+                    <a href="#services" onClick={(e) => scrollToSection(e, '#services')}>Services</a>
+                  </li>
+                  <li>
+                    <a href="#approach" onClick={(e) => scrollToSection(e, '#approach')}>Approach</a>
+                  </li>
+                  <li>
+                    <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')}>Contact</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="span-3 footer__col">
+                <h3>Legal</h3>
+                <ul>
+                  <li>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                  </li>
+                  <li>
+                    <Link to="/terms-of-conditions">Terms of Conditions</Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="footer__legal items-center">
+              <span>© {new Date().getFullYear()} DEEPFONS. All rights reserved.</span>
+
+              <div className="flex items-center gap-6 text-[13px]">
+                <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className="hover:text-[var(--ink)] transition-colors">
+                  Instagram
+                </a>
+                <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className="hover:text-[var(--ink)] transition-colors">
+                  LinkedIn
+                </a>
+                <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className="hover:text-[var(--ink)] transition-colors">
+                  Twitter (X)
+                </a>
+              </div>
+
+              <details className="credits">
+                <summary>Photographs via Wikimedia Commons</summary>
+                <p>
+                  Studio wall artwork by Gil Marco Shani (CC BY-SA 4.0); curved paper sculpture by Dietmar Rabich (CC BY-SA 4.0); layered card texture by Brandi Redd (CC0); lamp silhouette by LoMit (CC BY-SA 4.0); open notebook desk detail (Unsplash/CC0), all via Wikimedia Commons.
+                </p>
+              </details>
             </div>
           </div>
         </div>
       </footer>
-    </div>
+    </>
   );
 }

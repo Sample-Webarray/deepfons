@@ -50,14 +50,14 @@
 }
 
 .nav__logo img {
-  height: 28px !important;
+  height: 34px !important;
   width: auto !important;
   display: block;
 }
 
 @media (min-width: 1024px) {
   .nav__logo img {
-    height: 30px !important;
+    height: 38px !important;
   }
 }
 
